@@ -4,7 +4,7 @@ import com.finanapp.model.Usuario;
 
 import java.time.LocalDateTime;
 
-public record UsuarioRespondeDto(
+public record UsuarioResponseDto(
         Long id,
         String nombre,
         String telefono,
@@ -14,8 +14,8 @@ public record UsuarioRespondeDto(
         LocalDateTime creadoEn,
         boolean activo
         ) {
-    public static UsuarioRespondeDto fromEntity(Usuario usuario){
-        return new UsuarioRespondeDto(
+    public static UsuarioResponseDto fromEntity(Usuario usuario){
+        return new UsuarioResponseDto(
                 usuario.getId(),
                 usuario.getNombre(),
                 usuario.getTelefono(),
