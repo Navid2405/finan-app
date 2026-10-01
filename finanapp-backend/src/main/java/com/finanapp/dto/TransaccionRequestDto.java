@@ -14,8 +14,6 @@ public record TransaccionRequestDto(
         Long usuarioId,
         @NotNull(message = "El id de la categoria es obligtatorio")
         Long categoriaId,
-        @NotBlank(message = "el tipo de transaccion no puede estar vacio")
-        TipoTransaccion tipoTransaccion,
         @NotBlank(message = "el monto no puede estar vacio")
         BigDecimal monto,
         String descripcion,
