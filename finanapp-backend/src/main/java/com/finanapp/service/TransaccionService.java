@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class TransaccionService {
     @Transactional
     public TransaccionResponseDto crearTransaccion(TransaccionRequestDto requestDto) {
         Usuario usuario = usuarioRepository.findById(requestDto.usuarioId()).
-                orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + requestDto.categoriaId()));
+                orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + requestDto.usuarioId()));
 
         Categoria categoria = categoriaRepository.findById(requestDto.categoriaId()).
                 orElseThrow(() -> new RuntimeException("Categoria no encontrada con ID: " + requestDto.categoriaId()));
@@ -65,7 +66,7 @@ public class TransaccionService {
 
         List<Transaccion> transacciones = transaccionRepository.findByUsuarioIdAndFechaOrderByCreadoEnDesc(usuarioId, fechaFiltro);
 
-        return transaccionRepository.findByUsuarioIdAndFechaOrderByCreadoEnDesc(usuarioId, fechaFiltro)
+        return transacciones
                 .stream()
                 .map(TransaccionResponseDto::fromEntity)
                 .toList();
@@ -103,7 +104,7 @@ public class TransaccionService {
             cambios = true;
         }
 
-        if (requestActualizarDto.monto() != null && !requestActualizarDto.monto().equals(0)) {
+        if (requestActualizarDto.monto() != null && requestActualizarDto.monto().compareTo(BigDecimal.ZERO) > 0) {
             actTransaccion.setMonto(requestActualizarDto.monto());
             cambios = true;
         }
@@ -113,8 +114,8 @@ public class TransaccionService {
             cambios = true;
         }
 
-        transaccionRepository.save(actTransaccion);
-        return TransaccionResponseDto.fromEntity(actTransaccion);
+        Transaccion transaccionGuardada = transaccionRepository.save(actTransaccion);
+        return TransaccionResponseDto.fromEntity(transaccionGuardada);
 
 
     }
