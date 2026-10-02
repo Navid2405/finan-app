@@ -35,12 +35,13 @@ public class Transaccion {
     private Categoria categoria;
 
     @NotNull(message = "El tipo de transaccion no puede estar vacio")
-    @Column(nullable = false)
+    @Column(name = "tipo", nullable = false)
+    @Enumerated(EnumType.STRING)
     private TipoTransaccion tipoTransaccion;
 
     @NotNull(message = "El monto no puede estar vacio")
-    @Column(nullable = false, precision = 12, scale = 2  )
     @Positive
+    @Column(nullable = false, precision = 12, scale = 2  )
     private BigDecimal monto;
 
     @NotBlank(message = "La descripcion no puede estar vacia")
