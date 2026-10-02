@@ -38,7 +38,7 @@ public class CategoriaController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CategoriaResponseDto actualizarCategoria(Long id, CategoriaRequestActualizarDto actualizarDto){
+    public CategoriaResponseDto actualizarCategoria(@PathVariable Long id, @RequestBody CategoriaRequestActualizarDto actualizarDto){
         return categoriaService.actualizarCategoria(id, actualizarDto);
     }
 }
