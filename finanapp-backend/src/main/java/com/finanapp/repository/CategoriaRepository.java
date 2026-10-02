@@ -13,5 +13,5 @@ public interface CategoriaRepository extends JpaRepository<Categoria,Long> {
 
     List<Categoria> findByTipo(TipoTransaccion tipo);
 
-    List<Categoria> findByIdUsuarioOrUsuarioIsNull(Long usuarioId);
+    List<Categoria> findByUsuarioIdOrUsuarioIsNull(Long usuarioId);
 }
