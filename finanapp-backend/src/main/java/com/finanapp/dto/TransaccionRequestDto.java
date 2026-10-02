@@ -14,7 +14,7 @@ public record TransaccionRequestDto(
         Long usuarioId,
         @NotNull(message = "El id de la categoria es obligtatorio")
         Long categoriaId,
-        @NotBlank(message = "el monto no puede estar vacio")
+        @NotNull(message = "el monto no puede estar vacio")
         BigDecimal monto,
         String descripcion,
         String metodoPago,
