@@ -1,5 +1,6 @@
 package com.finanapp.controller;
 
+import com.finanapp.dto.BalanceDiarioDto;
 import com.finanapp.dto.TransaccionRequestActualizarDto;
 import com.finanapp.dto.TransaccionRequestDto;
 import com.finanapp.dto.TransaccionResponseDto;
@@ -44,5 +45,13 @@ public class TransaccionController {
     @ResponseStatus(HttpStatus.OK)
     public TransaccionResponseDto actualizarTransaccion(@PathVariable Long id, @RequestBody TransaccionRequestActualizarDto actualizarDto){
         return transaccionService.actualizarTransaccion(id, actualizarDto);
+    }
+
+    @GetMapping("/usuario/{usuarioId}/balance")
+    @ResponseStatus(HttpStatus.OK)
+    public BalanceDiarioDto obtenerBalance(
+            @PathVariable Long usuarioId,
+            @RequestParam(required = false) LocalDate fecha) {
+        return transaccionService.balanceDiario(usuarioId, fecha);
     }
 }

@@ -1,11 +1,9 @@
 package com.finanapp.service;
 
 
-import com.finanapp.dto.TransaccionRequestActualizarDto;
-import com.finanapp.dto.TransaccionRequestDto;
-import com.finanapp.dto.TransaccionResponseDto;
-import com.finanapp.dto.UsuarioResponseDto;
+import com.finanapp.dto.*;
 import com.finanapp.model.Categoria;
+import com.finanapp.model.TipoTransaccion;
 import com.finanapp.model.Transaccion;
 import com.finanapp.model.Usuario;
 import com.finanapp.repository.CategoriaRepository;
@@ -118,6 +116,30 @@ public class TransaccionService {
         return TransaccionResponseDto.fromEntity(transaccionGuardada);
 
 
+    }
+
+    //Calculo de balance diario
+
+    public BalanceDiarioDto balanceDiario(Long id, LocalDate fecha){
+        Usuario usuario = usuarioRepository.findById(id).
+                orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+
+        LocalDate fechaCons = (fecha != null) ? fecha : LocalDate.now();
+
+        BigDecimal ingresos = transaccionRepository.sumarMontoPorUsuarioFechaYTipo(id, fechaCons, TipoTransaccion.INGRESO);
+        BigDecimal gastos = transaccionRepository.sumarMontoPorUsuarioFechaYTipo(id, fechaCons, TipoTransaccion.GASTO);
+
+        BigDecimal balance = ingresos.subtract(gastos);
+
+        int movimientos = (int) transaccionRepository.countByUsuarioIdAndFecha(id, fechaCons);
+
+        return new BalanceDiarioDto(
+          fechaCons,
+          ingresos,
+          gastos,
+          balance,
+          movimientos
+        );
     }
 
 }
