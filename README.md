@@ -31,7 +31,7 @@ Las aplicaciones bancarias tradicionales asumen nóminas fijas mensuales, dejand
 * **Principios SOLID:** Inyección de dependencias por constructor mediante Lombok (@RequiredArgsConstructor) y clases con responsabilidad única.
 * **Integridad Transaccional:** Control de transacciones ACID mediante @Transactional y operaciones de lectura optimizadas (readOnly = true).
 ##  Modelo de Datos (Diagrama Entidad-Relación)
-![img.png](assets/img_1.png)
+![img_1.png](assets/img_1.png)
 
 ---
 
