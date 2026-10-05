@@ -36,8 +36,11 @@ public class ObligacionRecurrente {
 
     @NotNull(message = "El monto no puede estar vacio")
     @Positive
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(name = "monto_estimado",nullable = false, precision = 12, scale = 2)
     private BigDecimal monto;
+
+    @Column(name = "saldo_pendiente", nullable = false, precision = 12, scale = 2)
+    private BigDecimal saldoPendiente;
 
     @NotNull(message = "La frecuencia no puede estar vacia")
     @Enumerated(EnumType.STRING)

@@ -36,6 +36,7 @@ public class ObligacionRecurrenteService {
                 .usuario(usuario)
                 .nombre(requestObligacion.nombre())
                 .monto(requestObligacion.monto())
+                .saldoPendiente(requestObligacion.monto())
                 .frecuencia(requestObligacion.frecuencia())
                 .diaLimitePago(requestObligacion.fechaLimitePago())
                 .proximoVencimiento(requestObligacion.proximoVencimiento())

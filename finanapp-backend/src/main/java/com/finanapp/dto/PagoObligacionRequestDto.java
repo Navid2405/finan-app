@@ -14,13 +14,11 @@ public record PagoObligacionRequestDto(
         Long obligacionId,
         @NotNull(message = "El metodo de pago no puede estar vacio")
         String metodoPago,
-
-        @NotNull(message = "El id de la transaccion no puede estar vacia")
-        Long transaccionId,
+        @NotNull(message = "El id de la categoria no puede estar vacio")
+        Long categoriaId,
         @NotNull(message = "El monto no puede estar vacio")
         @Positive(message = "El monto debe ser positivo")
         BigDecimal montoPagado,
-
         LocalDate fechaPago
 ) {
 }
