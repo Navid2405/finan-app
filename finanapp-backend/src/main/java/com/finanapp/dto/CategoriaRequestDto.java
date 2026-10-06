@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CategoriaRequestDto(
-    Long usuarioId,
     @NotBlank(message = "El nombre no puede estar vacio")
     String nombre,
     @NotNull(message = "el tipo de transaccion no puede estar vacio")

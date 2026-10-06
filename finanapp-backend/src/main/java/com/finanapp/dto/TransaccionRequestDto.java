@@ -10,8 +10,6 @@ import java.time.LocalDate;
 
 public record TransaccionRequestDto(
 
-        @NotNull(message = "El id del usuario es obligtatorio")
-        Long usuarioId,
         @NotNull(message = "El id de la categoria es obligtatorio")
         Long categoriaId,
         @NotNull(message = "el monto no puede estar vacio")

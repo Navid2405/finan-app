@@ -27,9 +27,9 @@ public class TransaccionService {
 
     // Crear Transaccion (CREATE)
     @Transactional
-    public TransaccionResponseDto crearTransaccion(TransaccionRequestDto requestDto) {
-        Usuario usuario = usuarioRepository.findById(requestDto.usuarioId()).
-                orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + requestDto.usuarioId()));
+    public TransaccionResponseDto crearTransaccion(Long usuarioId,TransaccionRequestDto requestDto) {
+        Usuario usuario = usuarioRepository.findById(usuarioId).
+                orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));
 
         Categoria categoria = categoriaRepository.findById(requestDto.categoriaId()).
                 orElseThrow(() -> new RuntimeException("Categoria no encontrada con ID: " + requestDto.categoriaId()));
