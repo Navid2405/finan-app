@@ -129,4 +129,18 @@ public class ObligacionRecurrenteService {
         return ObligacionRecurrenteResponseDto.fromEntity(obligacionActualizada);
     }
 
+    //obtener la cuota diaria de seguridad
+    @Transactional (readOnly = true)
+    public BigDecimal obtenerCuotaDiariaSeguridad(Long usuarioId){
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+
+        if (!usuario.isActivo()){
+            throw new RuntimeException("El usuario no puede realizar esta accion");
+        }
+
+        BigDecimal cuotaSeguridad = obligacionRepository.calcularCuotaDiariaDeSeguridad(usuarioId);
+        return cuotaSeguridad;
+
+    }
 }
