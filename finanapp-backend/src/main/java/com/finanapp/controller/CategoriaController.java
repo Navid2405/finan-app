@@ -27,20 +27,21 @@ public class CategoriaController {
         return categoriaService.crearCategoria(requestDto);
     }
 
-    @GetMapping("/{categoriaId}")
+    @GetMapping("/listar")
     @ResponseStatus(HttpStatus.OK)
-    public List<CategoriaResponseDto> obtenerCategorias(@PathVariable Long categoriaId, @RequestParam (required = false) TipoTransaccion tipo){
-        return categoriaService.obtenerCategorias(categoriaId, tipo);
+    public List<CategoriaResponseDto> obtenerCategorias(@RequestParam (required = false) TipoTransaccion tipo, @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        return categoriaService.obtenerCategorias(usuarioId, tipo);
     }
 
-    @DeleteMapping("/{categoriaId}")
+    @DeleteMapping("/eliminar/{categoriaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminarCategoria (@PathVariable Long categoriaId, @AuthenticationPrincipal Jwt jwt){
         Long usuarioId = Long.valueOf(jwt.getSubject());
         categoriaService.eliminarCategoria( categoriaId, usuarioId);
     }
 
-    @PatchMapping("/{categoriaId}")
+    @PatchMapping("/actualizar/{categoriaId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoriaResponseDto actualizarCategoria(@PathVariable Long categoriaId, @RequestBody CategoriaRequestActualizarDto actualizarDto){
         return categoriaService.actualizarCategoria(categoriaId, actualizarDto);
