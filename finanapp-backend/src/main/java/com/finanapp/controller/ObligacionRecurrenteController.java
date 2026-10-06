@@ -24,8 +24,10 @@ public class ObligacionRecurrenteController {
     private final ObligacionRecurrenteService obligacionRecurrenteService;
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ObligacionRecurrenteResponseDto crearObligacion(@Valid @RequestBody ObligacionRecurrenteRequestDto obligacionRecurrenteRequestDto){
-        return obligacionRecurrenteService.crearObligacion(obligacionRecurrenteRequestDto);
+    public ObligacionRecurrenteResponseDto crearObligacion(@Valid @RequestBody ObligacionRecurrenteRequestDto obligacionRecurrenteRequestDto,
+                                                           @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId= Long.valueOf(jwt.getSubject());
+        return obligacionRecurrenteService.crearObligacion(usuarioId, obligacionRecurrenteRequestDto);
     }
 
     @GetMapping("/usuario")

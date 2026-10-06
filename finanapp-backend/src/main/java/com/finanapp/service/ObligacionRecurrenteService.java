@@ -24,9 +24,9 @@ public class ObligacionRecurrenteService {
     // Crear obligacion de un usuario (CREATE)
 
     @Transactional
-    public ObligacionRecurrenteResponseDto crearObligacion(ObligacionRecurrenteRequestDto requestObligacion){
-        Usuario usuario = usuarioRepository.findById(requestObligacion.usuarioId())
-                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + requestObligacion.usuarioId()));
+    public ObligacionRecurrenteResponseDto crearObligacion(Long usuarioId,ObligacionRecurrenteRequestDto requestObligacion){
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
             throw new RuntimeException("El usuario no puede realizar esta accion");

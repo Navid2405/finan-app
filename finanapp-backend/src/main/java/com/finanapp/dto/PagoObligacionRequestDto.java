@@ -8,8 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record PagoObligacionRequestDto(
-        @NotNull(message = "El id del usuario no puede estar vacio")
-        Long usuarioId,
+
         @NotNull(message = "La obligqcion no puede estar vacia ")
         Long obligacionId,
         @NotNull(message = "El metodo de pago no puede estar vacio")

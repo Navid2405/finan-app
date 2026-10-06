@@ -6,6 +6,8 @@ import com.finanapp.service.PagoObligacionService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +21,10 @@ public class PagoObligacionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PagoObligacionResponseDto crearPago (@Valid@RequestBody PagoObligacionRequestDto requestDto){
-        return pagoObligacionService.crearPago(requestDto);
+    public PagoObligacionResponseDto crearPago (@Valid@RequestBody PagoObligacionRequestDto requestDto, @AuthenticationPrincipal Jwt jwt){
+
+        Long usuarioId= Long.valueOf(jwt.getSubject());
+        return pagoObligacionService.crearPago(usuarioId, requestDto);
     }
 
     @GetMapping("/obligaciones/{obligacionId}")
