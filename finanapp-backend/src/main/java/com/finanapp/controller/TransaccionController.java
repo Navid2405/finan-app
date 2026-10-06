@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -31,7 +33,9 @@ public class TransaccionController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<TransaccionResponseDto> obtenerTransaccionPorUsuario(@PathVariable Long id, @RequestParam(required = false) LocalDate fecha){
+    public List<TransaccionResponseDto> obtenerTransaccionPorUsuario(@PathVariable Long id, @RequestParam(required = false) LocalDate fecha,
+                                                                     @AuthenticationPrincipal Jwt jwt){
+        validarAcesso(id, jwt);
         return transaccionService.obtenerTransaccionesDeUsuario(id, fecha);
     }
 
@@ -51,7 +55,18 @@ public class TransaccionController {
     @ResponseStatus(HttpStatus.OK)
     public BalanceDiarioDto obtenerBalance(
             @PathVariable Long usuarioId,
-            @RequestParam(required = false) LocalDate fecha) {
+            @RequestParam(required = false) LocalDate fecha, @AuthenticationPrincipal Jwt jwt) {
+
+        validarAcesso(usuarioId, jwt);
         return transaccionService.balanceDiario(usuarioId, fecha);
+    }
+
+    //metodo para validacion
+    private void validarAcesso(Long usuarioId, Jwt jwt){
+        if (!jwt.getSubject().equals(String.valueOf(usuarioId))){
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "Acceso denegado"
+            );
+        }
     }
 }
