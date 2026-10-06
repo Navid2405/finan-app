@@ -28,19 +28,18 @@ public class ObligacionRecurrenteController {
         return obligacionRecurrenteService.crearObligacion(obligacionRecurrenteRequestDto);
     }
 
-    @GetMapping("/usuario/{usuarioId}")
+    @GetMapping("/usuario")
     @ResponseStatus(HttpStatus.OK)
-    public List<ObligacionRecurrenteResponseDto> obtenerTodasObligaciones (@PathVariable Long usuarioId, @AuthenticationPrincipal Jwt jwt){
+    public List<ObligacionRecurrenteResponseDto> obtenerTodasObligaciones (@AuthenticationPrincipal Jwt jwt){
 
-        validarAcceso(usuarioId, jwt);
+        Long usuarioId= Long.valueOf(jwt.getSubject());
         return obligacionRecurrenteService.obtenerObligaciones(usuarioId);
     }
 
-    @GetMapping("/usuario/{usuarioId}/activas")
+    @GetMapping("/usuario/activas")
     @ResponseStatus(HttpStatus.OK)
-    public List<ObligacionRecurrenteResponseDto> obtenerObligacionesActivas (@PathVariable Long usuarioId,
-                                                                             @AuthenticationPrincipal Jwt jwt){
-        validarAcceso(usuarioId, jwt);
+    public List<ObligacionRecurrenteResponseDto> obtenerObligacionesActivas (@AuthenticationPrincipal Jwt jwt){
+        Long usuarioId= Long.valueOf(jwt.getSubject());
         return obligacionRecurrenteService.obtenerObligacionesActivas(usuarioId);
     }
 
@@ -56,19 +55,11 @@ public class ObligacionRecurrenteController {
         return  obligacionRecurrenteService.actualizarObligacion(id, actualizarDto);
     }
 
-    @GetMapping("/usuario/{usuarioId}/cuota-seguridad")
+    @GetMapping("/usuario/cuota-seguridad")
     @ResponseStatus(HttpStatus.OK)
-    public BigDecimal cuotaSeguridad(@PathVariable Long usuarioId){
+    public BigDecimal cuotaSeguridad(@AuthenticationPrincipal Jwt jwt){
+        Long usuarioId= Long.valueOf(jwt.getSubject());
         return obligacionRecurrenteService.obtenerCuotaDiariaSeguridad(usuarioId);
     }
-
-    private void validarAcceso(Long usuarioId, Jwt jwt){
-        if (!jwt.getSubject().equals(String.valueOf(usuarioId))){
-            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Acceso denegado");
-        }
-    }
-
-
 
 }
