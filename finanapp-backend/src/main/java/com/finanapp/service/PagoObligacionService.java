@@ -23,12 +23,12 @@ public class PagoObligacionService {
 
 //crear pago para una obligacion o deuda (CREATE)
     @Transactional
-    public PagoObligacionResponseDto crearPago (PagoObligacionRequestDto requestDto){
+    public PagoObligacionResponseDto crearPago (Long usuarioId, PagoObligacionRequestDto requestDto){
         ObligacionRecurrente obligacion = obligacionRecurrenteRepository.findById(requestDto.obligacionId())
                 .orElseThrow(() -> new RuntimeException("No se encontro obligacion con el id: "+ requestDto.obligacionId()));
 
-        Usuario usuario= usuarioRepository.findById(requestDto.usuarioId())
-                .orElseThrow(()-> new RuntimeException("No se encontro al usuario con Id: " + requestDto.usuarioId()));
+        Usuario usuario= usuarioRepository.findById(usuarioId)
+                .orElseThrow(()-> new RuntimeException("No se encontro al usuario con Id: " + usuarioId));
 
         Categoria categoria= categoriaRepository.findById(requestDto.categoriaId())
                 .orElseThrow(()->new RuntimeException("Categoria no encontrada con id: " + requestDto.categoriaId()));

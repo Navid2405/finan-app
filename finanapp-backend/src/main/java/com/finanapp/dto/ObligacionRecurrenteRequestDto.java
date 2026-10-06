@@ -9,8 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record ObligacionRecurrenteRequestDto(
-        @NotNull(message = "El id del usuario es obligtatorio")
-        Long usuarioId,
+
         @NotBlank(message = "El nombre no puede estar vacio")
         String nombre,
         @NotNull(message = "el monto no puede estar vacio")
