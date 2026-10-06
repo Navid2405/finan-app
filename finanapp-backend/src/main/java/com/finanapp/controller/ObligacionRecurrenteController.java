@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -28,13 +30,17 @@ public class ObligacionRecurrenteController {
 
     @GetMapping("/usuario/{usuarioId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ObligacionRecurrenteResponseDto> obtenerTodasObligaciones (@PathVariable Long usuarioId){
+    public List<ObligacionRecurrenteResponseDto> obtenerTodasObligaciones (@PathVariable Long usuarioId, @AuthenticationPrincipal Jwt jwt){
+
+        validarAcceso(usuarioId, jwt);
         return obligacionRecurrenteService.obtenerObligaciones(usuarioId);
     }
 
     @GetMapping("/usuario/{usuarioId}/activas")
     @ResponseStatus(HttpStatus.OK)
-    public List<ObligacionRecurrenteResponseDto> obtenerObligacionesActivas (@PathVariable Long usuarioId){
+    public List<ObligacionRecurrenteResponseDto> obtenerObligacionesActivas (@PathVariable Long usuarioId,
+                                                                             @AuthenticationPrincipal Jwt jwt){
+        validarAcceso(usuarioId, jwt);
         return obligacionRecurrenteService.obtenerObligacionesActivas(usuarioId);
     }
 
@@ -54,6 +60,13 @@ public class ObligacionRecurrenteController {
     @ResponseStatus(HttpStatus.OK)
     public BigDecimal cuotaSeguridad(@PathVariable Long usuarioId){
         return obligacionRecurrenteService.obtenerCuotaDiariaSeguridad(usuarioId);
+    }
+
+    private void validarAcceso(Long usuarioId, Jwt jwt){
+        if (!jwt.getSubject().equals(String.valueOf(usuarioId))){
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Acceso denegado");
+        }
     }
 
 
