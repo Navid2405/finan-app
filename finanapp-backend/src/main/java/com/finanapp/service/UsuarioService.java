@@ -6,6 +6,7 @@ import com.finanapp.dto.UsuarioResponseDto;
 import com.finanapp.model.Usuario;
 import com.finanapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     // Crear usuario (CREATE)
@@ -30,7 +32,7 @@ public class UsuarioService {
                 .nombre(usuarioRequestDto.nombre()).
                 telefono(usuarioRequestDto.telefono())
                 .email(usuarioRequestDto.email())
-                .passwordHash(usuarioRequestDto.password())
+                .passwordHash(passwordEncoder.encode(usuarioRequestDto.password()))
                 .ocupacion(usuarioRequestDto.ocupacion())
                 .activo(true)
                 .build();

@@ -9,7 +9,6 @@ public record UsuarioResponseDto(
         String nombre,
         String telefono,
         String email,
-        String passwordHash,
         String ocupacion,
         LocalDateTime creadoEn,
         boolean activo
@@ -20,7 +19,6 @@ public record UsuarioResponseDto(
                 usuario.getNombre(),
                 usuario.getTelefono(),
                 usuario.getEmail(),
-                usuario.getPasswordHash(),
                 usuario.getOcupacion(),
                 usuario.getCreadoEn(),
                 usuario.isActivo()
