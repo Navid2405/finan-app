@@ -32,7 +32,7 @@ public class CategoriaController {
 
     @DeleteMapping("/{categoriaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarCategoria ( @PathVariable Long categoriaId, @PathVariable Long usuarioId){
+    public void eliminarCategoria ( @PathVariable Long categoriaId, @RequestParam Long usuarioId){
         categoriaService.eliminarCategoria( categoriaId, usuarioId);
     }
 
