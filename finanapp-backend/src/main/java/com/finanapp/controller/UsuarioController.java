@@ -25,35 +25,28 @@ public class UsuarioController {
         return usuarioService.crearUsuario(usuarioRequestDto);
     }
 
-    @GetMapping("/{usuarioId}")
+    @GetMapping("/perfil")
     @ResponseStatus(HttpStatus.OK)
-    public UsuarioResponseDto buscarPorId(@PathVariable Long usuarioId,
-                                          @AuthenticationPrincipal Jwt jwt){
+    public UsuarioResponseDto buscarPorId(@AuthenticationPrincipal Jwt jwt){
 
-        validarAcceso(usuarioId, jwt);
+        Long usuarioId= Long.valueOf(jwt.getSubject());
         return usuarioService.obtenerPorId(usuarioId);
     }
 
-    @DeleteMapping("/{usuarioId}")
+    @DeleteMapping("/desactivar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desactivarUsuario(@PathVariable Long usuarioId, @AuthenticationPrincipal Jwt jwt){
+    public void desactivarUsuario(@AuthenticationPrincipal Jwt jwt){
 
-        validarAcceso(usuarioId, jwt);
+        Long usuarioId= Long.valueOf(jwt.getSubject());
         usuarioService.desacativarUsuario(usuarioId);
     }
 
-    @PatchMapping("/{usuarioId}")
+    @PatchMapping("/actualizar")
     @ResponseStatus(HttpStatus.OK)
-    public UsuarioResponseDto actualizarUsuario(@PathVariable Long usuarioId,@RequestBody UsuarioRequestActualizarDto actualizarDto,
+    public UsuarioResponseDto actualizarUsuario(@RequestBody UsuarioRequestActualizarDto actualizarDto,
                                                 @AuthenticationPrincipal Jwt jwt){
-        validarAcceso(usuarioId,jwt);
+        Long usuarioId= Long.valueOf(jwt.getSubject());
         return usuarioService.actualizarUsuario(usuarioId, actualizarDto );
     }
 
-    private void validarAcceso(Long usuarioId, Jwt jwt){
-        if (!jwt.getSubject().equals(String.valueOf(usuarioId))){
-            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Acceso denegado");
-        }
-    }
 }
