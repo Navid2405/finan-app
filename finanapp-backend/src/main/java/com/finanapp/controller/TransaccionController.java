@@ -26,8 +26,10 @@ public class TransaccionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public TransaccionResponseDto crearTransaccion( @Valid @RequestBody TransaccionRequestDto transaccionRequestDto){
-        return transaccionService.crearTransaccion(transaccionRequestDto);
+    public TransaccionResponseDto crearTransaccion( @Valid @RequestBody TransaccionRequestDto transaccionRequestDto,
+                                                    @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        return transaccionService.crearTransaccion(usuarioId,transaccionRequestDto);
     }
 
 

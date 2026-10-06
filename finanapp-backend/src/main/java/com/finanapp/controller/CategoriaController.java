@@ -23,8 +23,10 @@ public class CategoriaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public CategoriaResponseDto crearCategoria (@Valid @RequestBody CategoriaRequestDto requestDto){
-        return categoriaService.crearCategoria(requestDto);
+    public CategoriaResponseDto crearCategoria (@Valid @RequestBody CategoriaRequestDto requestDto,
+                                                @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        return categoriaService.crearCategoria(usuarioId,requestDto);
     }
 
     @GetMapping("/listar")
