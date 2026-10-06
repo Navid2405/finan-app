@@ -7,6 +7,8 @@ import com.finanapp.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,21 +25,35 @@ public class UsuarioController {
         return usuarioService.crearUsuario(usuarioRequestDto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{usuarioId}")
     @ResponseStatus(HttpStatus.OK)
-    public UsuarioResponseDto buscarPorId(@PathVariable Long id){
-        return usuarioService.obtenerPorId(id);
+    public UsuarioResponseDto buscarPorId(@PathVariable Long usuarioId,
+                                          @AuthenticationPrincipal Jwt jwt){
+
+        validarAcceso(usuarioId, jwt);
+        return usuarioService.obtenerPorId(usuarioId);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{usuarioId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desactivarUsuario(@PathVariable Long id){
-        usuarioService.desacativarUsuario(id);
+    public void desactivarUsuario(@PathVariable Long usuarioId, @AuthenticationPrincipal Jwt jwt){
+
+        validarAcceso(usuarioId, jwt);
+        usuarioService.desacativarUsuario(usuarioId);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{usuarioId}")
     @ResponseStatus(HttpStatus.OK)
-    public UsuarioResponseDto actualizarUsuario(@PathVariable Long id,@RequestBody UsuarioRequestActualizarDto actualizarDto){
-        return usuarioService.actualizarUsuario(id, actualizarDto );
+    public UsuarioResponseDto actualizarUsuario(@PathVariable Long usuarioId,@RequestBody UsuarioRequestActualizarDto actualizarDto,
+                                                @AuthenticationPrincipal Jwt jwt){
+        validarAcceso(usuarioId,jwt);
+        return usuarioService.actualizarUsuario(usuarioId, actualizarDto );
+    }
+
+    private void validarAcceso(Long usuarioId, Jwt jwt){
+        if (!jwt.getSubject().equals(String.valueOf(usuarioId))){
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Acceso denegado");
+        }
     }
 }
