@@ -31,12 +31,12 @@ public class TransaccionController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/usuario")
     @ResponseStatus(HttpStatus.OK)
-    public List<TransaccionResponseDto> obtenerTransaccionPorUsuario(@PathVariable Long id, @RequestParam(required = false) LocalDate fecha,
+    public List<TransaccionResponseDto> obtenerTransaccionPorUsuario(@RequestParam(required = false) LocalDate fecha,
                                                                      @AuthenticationPrincipal Jwt jwt){
-        validarAcesso(id, jwt);
-        return transaccionService.obtenerTransaccionesDeUsuario(id, fecha);
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        return transaccionService.obtenerTransaccionesDeUsuario(usuarioId, fecha);
     }
 
     @DeleteMapping("/{id}")
@@ -51,22 +51,10 @@ public class TransaccionController {
         return transaccionService.actualizarTransaccion(id, actualizarDto);
     }
 
-    @GetMapping("/usuario/{usuarioId}/balance")
+    @GetMapping("/usuario/balance")
     @ResponseStatus(HttpStatus.OK)
-    public BalanceDiarioDto obtenerBalance(
-            @PathVariable Long usuarioId,
-            @RequestParam(required = false) LocalDate fecha, @AuthenticationPrincipal Jwt jwt) {
-
-        validarAcesso(usuarioId, jwt);
+    public BalanceDiarioDto obtenerBalance(@RequestParam(required = false) LocalDate fecha, @AuthenticationPrincipal Jwt jwt) {
+        Long usuarioId = Long.valueOf(jwt.getSubject());
         return transaccionService.balanceDiario(usuarioId, fecha);
-    }
-
-    //metodo para validacion
-    private void validarAcesso(Long usuarioId, Jwt jwt){
-        if (!jwt.getSubject().equals(String.valueOf(usuarioId))){
-            throw new org.springframework.web.server.ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Acceso denegado"
-            );
-        }
     }
 }
