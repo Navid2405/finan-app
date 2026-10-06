@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -49,6 +50,11 @@ public class ObligacionRecurrenteController {
         return  obligacionRecurrenteService.actualizarObligacion(id, actualizarDto);
     }
 
+    @GetMapping("/usuario/{usuarioId}/cuota-seguridad")
+    @ResponseStatus(HttpStatus.OK)
+    public BigDecimal cuotaSeguridad(@PathVariable Long usuarioId){
+        return obligacionRecurrenteService.obtenerCuotaDiariaSeguridad(usuarioId);
+    }
 
 
 

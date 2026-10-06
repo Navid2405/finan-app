@@ -1,5 +1,6 @@
 package com.finanapp.dto;
 
+import com.finanapp.model.EstadoObligacion;
 import com.finanapp.model.Frecuencia;
 import com.finanapp.model.ObligacionRecurrente;
 import com.finanapp.model.Usuario;
@@ -16,8 +17,21 @@ public record ObligacionRecurrenteResponseDto(
         Frecuencia frecuencia,
         Integer fechaLimitePago,
         LocalDate proximoVencimiento,
+        EstadoObligacion estado,
         boolean activa
+
+
 ) {
+
+    public static EstadoObligacion calcularEstado(BigDecimal saldoPendiente, LocalDate proximoVencimiento){
+        if (saldoPendiente.compareTo(BigDecimal.ZERO)<=0){
+            return EstadoObligacion.PAGADA;
+        }
+        if (LocalDate.now().isAfter(proximoVencimiento)){
+            return EstadoObligacion.VENCIDA;
+        }
+        return EstadoObligacion.PENDIENTE;
+    }
 
     public static ObligacionRecurrenteResponseDto fromEntity(ObligacionRecurrente obligacion){
         return new ObligacionRecurrenteResponseDto(
@@ -29,6 +43,7 @@ public record ObligacionRecurrenteResponseDto(
                 obligacion.getFrecuencia(),
                 obligacion.getDiaLimitePago(),
                 obligacion.getProximoVencimiento(),
+                calcularEstado(obligacion.getSaldoPendiente(), obligacion.getProximoVencimiento()),
                 obligacion.isActiva()
         );
 
