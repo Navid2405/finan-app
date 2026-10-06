@@ -24,9 +24,9 @@ public class CategoriaService {
 
     //crear categoria (CREATE)
     @Transactional
-    public CategoriaResponseDto crearCategoria(CategoriaRequestDto categoriaRequestDto){
-        Usuario usuario = usuarioRepository.findById(categoriaRequestDto.usuarioId())
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con ID: " + categoriaRequestDto.usuarioId()));
+    public CategoriaResponseDto crearCategoria(Long usuarioId, CategoriaRequestDto categoriaRequestDto){
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con ID: " + usuarioId));
 
         if (!usuario.isActivo()){
             throw new RuntimeException("El usuario no puede realizar esta accion");
