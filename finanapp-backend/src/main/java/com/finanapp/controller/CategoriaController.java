@@ -7,7 +7,10 @@ import com.finanapp.model.TipoTransaccion;
 import com.finanapp.service.CategoriaService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.Jar;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +35,8 @@ public class CategoriaController {
 
     @DeleteMapping("/{categoriaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarCategoria ( @PathVariable Long categoriaId, @RequestParam Long usuarioId){
+    public void eliminarCategoria (@PathVariable Long categoriaId, @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId = Long.valueOf(jwt.getSubject());
         categoriaService.eliminarCategoria( categoriaId, usuarioId);
     }
 
