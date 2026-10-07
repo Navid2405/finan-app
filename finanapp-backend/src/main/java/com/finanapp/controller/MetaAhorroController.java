@@ -1,5 +1,6 @@
 package com.finanapp.controller;
 
+import com.finanapp.dto.MetaAhorroRequestActualizarDto;
 import com.finanapp.dto.MetaAhorroRequestDto;
 import com.finanapp.dto.MetaAhorroResponseDto;
 import com.finanapp.model.EstadoMeta;
@@ -55,7 +56,7 @@ public class MetaAhorroController {
 
     @PatchMapping("/{metaId}")
     @ResponseStatus(HttpStatus.OK)
-    public MetaAhorroResponseDto actualizarMeta(@PathVariable Long metaId, @Valid@RequestBody MetaAhorroRequestDto requestDto,
+    public MetaAhorroResponseDto actualizarMeta(@PathVariable Long metaId, @Valid@RequestBody MetaAhorroRequestActualizarDto requestDto,
                                                 @AuthenticationPrincipal Jwt jwt){
         Long usuarioId = Long.valueOf(jwt.getSubject());
         return metaService.actualizarMeta(usuarioId ,metaId, requestDto);

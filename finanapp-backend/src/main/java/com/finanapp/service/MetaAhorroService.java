@@ -1,5 +1,6 @@
 package com.finanapp.service;
 
+import com.finanapp.dto.MetaAhorroRequestActualizarDto;
 import com.finanapp.dto.MetaAhorroRequestDto;
 import com.finanapp.dto.MetaAhorroResponseDto;
 import com.finanapp.model.EstadoMeta;
@@ -120,7 +121,7 @@ public class MetaAhorroService {
 
     // actualizar caja de ahorro o meta
     @Transactional
-    public MetaAhorroResponseDto actualizarMeta(Long usuarioId ,Long metaId, MetaAhorroRequestDto requestDto){
+    public MetaAhorroResponseDto actualizarMeta(Long usuarioId ,Long metaId, MetaAhorroRequestActualizarDto requestDto){
 
         MetasAhorro meta= metaRepository.findById(metaId)
                 .orElseThrow(()-> new RuntimeException("No exista el ahorro o meta con id: " + metaId));
