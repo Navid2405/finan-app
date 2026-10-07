@@ -65,6 +65,9 @@ public class PagoObligacionService {
                 .build();
 
 
+        if (pago.getMontoPagado().compareTo(obligacion.getSaldoPendiente()) > 0){
+            throw new RuntimeException("No se puede realizar un pago mayor a lo restante");
+        }
 
         BigDecimal nuevoSaldo = obligacion.getSaldoPendiente().subtract(requestDto.montoPagado());
 
