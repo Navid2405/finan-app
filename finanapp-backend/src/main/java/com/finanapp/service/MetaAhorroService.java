@@ -149,6 +149,14 @@ public class MetaAhorroService {
 
         if (requestDto.montoObjetivo() != null){
             meta.setMontoObjetivo(requestDto.montoObjetivo());
+
+            if (requestDto.montoObjetivo().compareTo(meta.getMontoAcumulado()) <= 0){
+                meta.setEstado(EstadoMeta.COMPLETADA);
+            }
+
+            if (requestDto.montoObjetivo().compareTo(meta.getMontoAcumulado()) > 0){
+                meta.setEstado(EstadoMeta.EN_PROGRESO);
+            }
             cambios = true;
         }
 
