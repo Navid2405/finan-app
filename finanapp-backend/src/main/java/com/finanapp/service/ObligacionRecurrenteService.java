@@ -3,6 +3,7 @@ package com.finanapp.service;
 import com.finanapp.dto.ObligacionRecurrenteRequestActualizarDto;
 import com.finanapp.dto.ObligacionRecurrenteRequestDto;
 import com.finanapp.dto.ObligacionRecurrenteResponseDto;
+import com.finanapp.model.EstadoObligacion;
 import com.finanapp.model.ObligacionRecurrente;
 import com.finanapp.model.Usuario;
 import com.finanapp.repository.ObligacionRecurrenteRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -38,6 +40,7 @@ public class ObligacionRecurrenteService {
                 .monto(requestObligacion.monto())
                 .saldoPendiente(requestObligacion.monto())
                 .frecuencia(requestObligacion.frecuencia())
+                .estado(EstadoObligacion.PENDIENTE)
                 .diaLimitePago(requestObligacion.fechaLimitePago())
                 .proximoVencimiento(requestObligacion.proximoVencimiento())
                 .activa(true)
@@ -48,7 +51,7 @@ public class ObligacionRecurrenteService {
     }
 
     //Obtener todas las obligaciones de un usuario (READ)
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ObligacionRecurrenteResponseDto> obtenerObligaciones(Long usuarioId){
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
@@ -57,7 +60,9 @@ public class ObligacionRecurrenteService {
             throw new RuntimeException("El usuario no puede realizar esta accion");
         }
 
+
         List<ObligacionRecurrente> obligacionesUsuario = obligacionRepository.findByUsuarioId(usuarioId);
+        obligacionesUsuario.forEach(this::verificarYActualizarVencimiento);
 
         return obligacionesUsuario.stream()
                 .map(ObligacionRecurrenteResponseDto::fromEntity)
@@ -140,12 +145,36 @@ public class ObligacionRecurrenteService {
 
         if (actualizarDto.proximoVencimiento() != null){
             obligacion.setProximoVencimiento(actualizarDto.proximoVencimiento());
+            if (!LocalDate.now().isAfter(actualizarDto.proximoVencimiento()) && obligacion.getEstado() == EstadoObligacion.VENCIDA) {
+                obligacion.setEstado(EstadoObligacion.PENDIENTE);
+            } else {
+                verificarYActualizarVencimiento(obligacion);
+            }
+
             cambios = true;
         }
 
         ObligacionRecurrente obligacionActualizada = obligacionRepository.save(obligacion);
         return ObligacionRecurrenteResponseDto.fromEntity(obligacionActualizada);
     }
+
+    //obtener obligaciones por estado y usuario id
+    @Transactional
+    public List<ObligacionRecurrenteResponseDto> obtenerObligacionesUsuarioYEstado(Long usuarioId, EstadoObligacion estado){
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+
+        if (!usuario.isActivo()){
+            throw new RuntimeException("El usuario no puede realizar esta accion");
+        }
+
+        List<ObligacionRecurrente> obligaciones = obligacionRepository.findByUsuarioIdAndEstado(usuarioId, estado);
+        obligaciones.forEach(this::verificarYActualizarVencimiento);
+        return obligaciones.stream().filter(o->o.getEstado() == estado).map(ObligacionRecurrenteResponseDto::fromEntity).toList();
+    }
+
+
+
 
     //obtener la cuota diaria de seguridad
     @Transactional (readOnly = true)
@@ -160,5 +189,16 @@ public class ObligacionRecurrenteService {
         BigDecimal cuotaSeguridad = obligacionRepository.calcularCuotaDiariaDeSeguridad(usuarioId);
         return cuotaSeguridad;
 
+    }
+
+
+    private void verificarYActualizarVencimiento(ObligacionRecurrente obligacion) {
+        if (obligacion.getEstado() == EstadoObligacion.PENDIENTE
+                && obligacion.getProximoVencimiento() != null
+                && LocalDate.now().isAfter(obligacion.getProximoVencimiento())) {
+
+            obligacion.setEstado(EstadoObligacion.VENCIDA);
+            obligacionRepository.save(obligacion);
+        }
     }
 }

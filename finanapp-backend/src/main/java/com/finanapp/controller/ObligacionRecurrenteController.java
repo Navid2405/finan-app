@@ -3,6 +3,7 @@ package com.finanapp.controller;
 import com.finanapp.dto.ObligacionRecurrenteRequestActualizarDto;
 import com.finanapp.dto.ObligacionRecurrenteRequestDto;
 import com.finanapp.dto.ObligacionRecurrenteResponseDto;
+import com.finanapp.model.EstadoObligacion;
 import com.finanapp.service.ObligacionRecurrenteService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -58,6 +59,13 @@ public class ObligacionRecurrenteController {
                                                                 @AuthenticationPrincipal Jwt jwt){
         Long usuarioId= Long.valueOf(jwt.getSubject());
         return  obligacionRecurrenteService.actualizarObligacion(usuarioId ,categoriaId, actualizarDto);
+    }
+
+    @GetMapping("/{estado}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ObligacionRecurrenteResponseDto> obtenerObligacionUsuarioEstado(@PathVariable EstadoObligacion estado, @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId= Long.valueOf(jwt.getSubject());
+        return obligacionRecurrenteService.obtenerObligacionesUsuarioYEstado(usuarioId, estado);
     }
 
     @GetMapping("/usuario/cuota-seguridad")

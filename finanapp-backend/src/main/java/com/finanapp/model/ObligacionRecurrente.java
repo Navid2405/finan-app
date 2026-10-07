@@ -47,6 +47,10 @@ public class ObligacionRecurrente {
     @Column(nullable = false, name = "frecuencia")
     private Frecuencia frecuencia;
 
+    @NotNull(message = "El estado no puede estar vacia")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "estado")
+    private EstadoObligacion estado;
 
     @Positive
     @Column(nullable = false, name = "dia_limite_pago")
