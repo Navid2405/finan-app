@@ -54,7 +54,8 @@ public class AporteAhorroService {
                 .nota(requestDto.nota())
                 .build();
 
-        BigDecimal nuevoAcumulado = meta.getMontoAcumulado().add(nuevoAporte.getMonto());
+        BigDecimal acumuladoActual = meta.getMontoAcumulado() != null ? meta.getMontoAcumulado() : BigDecimal.ZERO;
+        BigDecimal nuevoAcumulado = acumuladoActual.add(nuevoAporte.getMonto());
         meta.setMontoAcumulado(nuevoAcumulado);
 
         if(meta.getMontoAcumulado().compareTo(meta.getMontoObjetivo()) >=0){
@@ -91,7 +92,9 @@ public class AporteAhorroService {
             throw new RuntimeException("No puedes realizar esta accion");
         }
 
-        if (requestDto.montoRetiro().compareTo(meta.getMontoAcumulado())>0){
+        BigDecimal acumuladoActual = meta.getMontoAcumulado() != null ? meta.getMontoAcumulado() : BigDecimal.ZERO;
+
+        if (requestDto.montoRetiro().compareTo(acumuladoActual)>0){
             throw new RuntimeException("Saldo insuficiente");
         }
 
@@ -109,7 +112,7 @@ public class AporteAhorroService {
 
         transaccionRepository.save(transaccion);
 
-        BigDecimal nuevoAcumulado = meta.getMontoAcumulado().subtract(transaccion.getMonto());
+        BigDecimal nuevoAcumulado = acumuladoActual.subtract(transaccion.getMonto());
         meta.setMontoAcumulado(nuevoAcumulado);
 
         if (meta.getMontoAcumulado().compareTo(meta.getMontoObjetivo())<0){

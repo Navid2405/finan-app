@@ -37,8 +37,9 @@ public class MetasAhorro {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal montoObjetivo;
 
-    @Column( precision = 12, scale = 2)
-    private BigDecimal montoAcumulado;
+    @Builder.Default
+    @Column( name = "monto_acumulado",nullable = false, precision = 12, scale = 2)
+    private BigDecimal montoAcumulado = BigDecimal.ZERO;
 
     @Column(nullable = false)
     private LocalDate fechaLimite;
@@ -49,6 +50,12 @@ public class MetasAhorro {
     private EstadoMeta estado;
 
 
+    @PrePersist
+    protected void enCreacion(){
+        if (this.montoAcumulado == null){
+            this.montoAcumulado = BigDecimal.ZERO;
+        }
+    }
 
 
 }
