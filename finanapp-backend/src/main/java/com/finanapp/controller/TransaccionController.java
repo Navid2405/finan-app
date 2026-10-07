@@ -35,10 +35,11 @@ public class TransaccionController {
 
     @GetMapping("/usuario")
     @ResponseStatus(HttpStatus.OK)
-    public List<TransaccionResponseDto> obtenerTransaccionPorUsuario(@RequestParam(required = false) LocalDate fecha,
+    public List<TransaccionResponseDto> obtenerTransaccionPorUsuario(@RequestParam(required = false) LocalDate fechaInicio,
+                                                                     @RequestParam(required = false) LocalDate fechaFin,
                                                                      @AuthenticationPrincipal Jwt jwt){
         Long usuarioId = Long.valueOf(jwt.getSubject());
-        return transaccionService.obtenerTransaccionesDeUsuario(usuarioId, fecha);
+        return transaccionService.obtenerTransaccionesDeUsuario(usuarioId, fechaInicio, fechaFin);
     }
 
     @DeleteMapping("/{transaccionId}")

@@ -60,18 +60,28 @@ public class TransaccionService {
 
     // obtener transacciones por usuario (READ)
     @Transactional(readOnly = true)
-    public List<TransaccionResponseDto> obtenerTransaccionesDeUsuario(Long usuarioId, LocalDate fecha) {
+    public List<TransaccionResponseDto> obtenerTransaccionesDeUsuario(Long usuarioId, LocalDate fechaInicio, LocalDate fechaFin) {
 
-        LocalDate fechaFiltro = (fecha != null) ? fecha : LocalDate.now();
+       Usuario usuario = usuarioRepository.findById(usuarioId)
+               .orElseThrow(()-> new RuntimeException("No se encontro al usuario con id : "+ usuarioId));
+       if (!usuario.isActivo()){
+           throw new RuntimeException("El usuario no puede realozar esta accion");
+       }
 
-        if (!usuarioRepository.existsById(usuarioId)) {
-            throw new RuntimeException("Usuario no encontrado con ID: " + usuarioId);
+        List<Transaccion> transacciones;
+
+        if (fechaInicio != null && fechaFin != null) {
+            transacciones = transaccionRepository
+                    .findByUsuarioIdAndFechaBetweenOrderByFechaDescCreadoEnDesc(usuarioId, fechaInicio, fechaFin);
+
+        } else if (fechaInicio != null) {
+            transacciones = transaccionRepository
+                    .findByUsuarioIdAndFechaOrderByCreadoEnDesc(usuarioId, fechaInicio);
+
+        } else {
+            transacciones = transaccionRepository.findByUsuarioIdOrderByFechaDescCreadoEnDesc(usuarioId);
         }
-
-        List<Transaccion> transacciones = transaccionRepository.findByUsuarioIdAndFechaOrderByCreadoEnDesc(usuarioId, fechaFiltro);
-
-        return transacciones
-                .stream()
+        return transacciones.stream()
                 .map(TransaccionResponseDto::fromEntity)
                 .toList();
     }
