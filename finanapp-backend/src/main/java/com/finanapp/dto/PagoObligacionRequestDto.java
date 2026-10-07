@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 public record PagoObligacionRequestDto(
 
-        @NotNull(message = "La obligqcion no puede estar vacia ")
+        @NotNull(message = "La obligacion no puede estar vacia ")
         Long obligacionId,
         @NotNull(message = "El metodo de pago no puede estar vacio")
         String metodoPago,

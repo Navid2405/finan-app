@@ -44,8 +44,8 @@ public class MetaAhorroService {
                 .estado(EstadoMeta.EN_PROGRESO)
                 .build();
 
-        MetasAhorro mmetaGuardad = metaRepository.save(nuevaMeta);
-        return MetaAhorroResponseDto.fromEntity(mmetaGuardad);
+        MetasAhorro metaGuardad = metaRepository.save(nuevaMeta);
+        return MetaAhorroResponseDto.fromEntity(metaGuardad);
     }
 
     //Obtener metas de un usuario
@@ -124,7 +124,7 @@ public class MetaAhorroService {
     public MetaAhorroResponseDto actualizarMeta(Long usuarioId ,Long metaId, MetaAhorroRequestActualizarDto requestDto){
 
         MetasAhorro meta= metaRepository.findById(metaId)
-                .orElseThrow(()-> new RuntimeException("No exista el ahorro o meta con id: " + metaId));
+                .orElseThrow(()-> new RuntimeException("No existe el ahorro o meta con id: " + metaId));
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
 

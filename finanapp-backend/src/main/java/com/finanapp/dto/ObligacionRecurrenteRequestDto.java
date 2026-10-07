@@ -21,7 +21,7 @@ public record ObligacionRecurrenteRequestDto(
         @Max(31)
         Integer diaLimitePago,
 
-        @NotNull(message = "La fecha no puede limite no puede estar vacia")
+        @NotNull(message = "La fecha limite no puede estar vacia")
         LocalDate proximoVencimiento
 ) {
 }

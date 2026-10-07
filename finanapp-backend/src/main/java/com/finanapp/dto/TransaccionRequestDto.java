@@ -1,7 +1,6 @@
 package com.finanapp.dto;
 
-import com.finanapp.model.TipoTransaccion;
-import jakarta.validation.constraints.NotBlank;
+
 import jakarta.validation.constraints.NotNull;
 
 import javax.swing.*;
@@ -10,7 +9,7 @@ import java.time.LocalDate;
 
 public record TransaccionRequestDto(
 
-        @NotNull(message = "El id de la categoria es obligtatorio")
+        @NotNull(message = "El id de la categoria es obligattorio")
         Long categoriaId,
         @NotNull(message = "el monto no puede estar vacio")
         BigDecimal monto,

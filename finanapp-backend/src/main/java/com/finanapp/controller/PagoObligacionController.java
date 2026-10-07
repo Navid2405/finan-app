@@ -32,6 +32,6 @@ public class PagoObligacionController {
     public List<PagoObligacionResponseDto> obtenerHistorialPagoObligacion (@PathVariable long obligacionId,
                                                                            @AuthenticationPrincipal Jwt jwt){
         Long usuarioId= Long.valueOf(jwt.getSubject());
-        return pagoObligacionService.obtnerHistorialPagosPorObligacion(usuarioId, obligacionId);
+        return pagoObligacionService.obtenerHistorialPagosPorObligacion(usuarioId, obligacionId);
     }
 }

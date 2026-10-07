@@ -7,7 +7,6 @@ import com.finanapp.model.TipoTransaccion;
 import com.finanapp.service.CategoriaService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.apache.tomcat.Jar;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;

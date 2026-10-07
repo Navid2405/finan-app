@@ -34,7 +34,7 @@ public class PagoObligacionService {
                 .orElseThrow(()->new RuntimeException("Categoria no encontrada con id: " + requestDto.categoriaId()));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realoizar esta accion");
+            throw new RuntimeException("El usuario no puede realizar esta accion");
         }
         if (!obligacion.isActiva()) {
             throw new RuntimeException("La obligación se encuentra inactiva");
@@ -90,7 +90,7 @@ public class PagoObligacionService {
 
     //Obtener todo el historial de pago de un usuario por obligacion
     @Transactional(readOnly = true)
-    public List<PagoObligacionResponseDto> obtnerHistorialPagosPorObligacion(Long usuarioId, Long obligacionId){
+    public List<PagoObligacionResponseDto> obtenerHistorialPagosPorObligacion(Long usuarioId, Long obligacionId){
         ObligacionRecurrente obligacion = obligacionRecurrenteRepository.findById(obligacionId)
                 .orElseThrow(() -> new RuntimeException("No se encontro obligacion con el id: " + obligacionId));
 

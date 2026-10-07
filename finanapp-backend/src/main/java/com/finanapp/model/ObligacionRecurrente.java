@@ -2,13 +2,10 @@ package com.finanapp.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import jdk.jfr.Enabled;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.engine.profile.Fetch;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

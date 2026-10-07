@@ -2,7 +2,7 @@ package com.finanapp.dto;
 
 import com.finanapp.model.Frecuencia;
 import jakarta.validation.constraints.*;
-import org.springframework.cglib.core.Local;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

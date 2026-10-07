@@ -39,8 +39,8 @@ public class CategoriaService {
                 .icono(categoriaRequestDto.icono())
                 .build();
 
-        Categoria nuevCategoria = categoriaRepository.save(categoria);
-        return CategoriaResponseDto.fromEntity(nuevCategoria);
+        Categoria nuevaCategoria = categoriaRepository.save(categoria);
+        return CategoriaResponseDto.fromEntity(nuevaCategoria);
     }
 
     //obtener todas las categorias, globales y creadas por un usuario (READ)

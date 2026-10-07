@@ -38,7 +38,7 @@ public class UsuarioController {
     public void desactivarUsuario(@AuthenticationPrincipal Jwt jwt){
 
         Long usuarioId= Long.valueOf(jwt.getSubject());
-        usuarioService.desacativarUsuario(usuarioId);
+        usuarioService.desactivarUsuario(usuarioId);
     }
 
     @PatchMapping("/actualizar")

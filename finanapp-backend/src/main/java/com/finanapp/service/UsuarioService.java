@@ -55,7 +55,7 @@ public class UsuarioService {
     /* Eliminar (DELETE), En este caso no usamos delete, yua que siendo una app de manejo financiero se borraria
     todo el historial del usuario, por esta razon solo la desactivamos.*/
     @Transactional
-    public void desacativarUsuario(Long id){
+    public void desactivarUsuario(Long id){
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Usuario no encontrado con Id" + id));
 
@@ -81,7 +81,7 @@ public class UsuarioService {
             cambios = true;
         }
         if (!cambios){
-            throw new RuntimeException("Campos vacios, no se puede actulizar");
+            throw new RuntimeException("Campos vacios, no se puede actualizar");
         }
 
         usuarioRepository.save(usuario);
