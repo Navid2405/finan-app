@@ -81,14 +81,24 @@ public class CategoriaService {
 
     //Actualizar categoria (UPDATE)
     @Transactional
-    public CategoriaResponseDto actualizarCategoria(Long id, CategoriaRequestActualizarDto actualizarDto){
+    public CategoriaResponseDto actualizarCategoria(Long usuarioId,Long id, CategoriaRequestActualizarDto actualizarDto){
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("No se encontro categoria con el ID: " + id));
+
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con ID: " + usuarioId));
+
+        if (!usuario.isActivo()){
+            throw new RuntimeException("El usuario no puede realizar esta accion");
+        }
 
         if (categoria.getUsuario() == null) {
             throw new RuntimeException("No se pueden modificar las categorías base del sistema.");
         }
 
+        if (!categoria.getUsuario().getId().equals(usuarioId)){
+            throw new RuntimeException("No puedes actualizar esta categoria");
+        }
         boolean cambios = false;
 
         if (actualizarDto.icono() != null && !actualizarDto.icono().isBlank()) {

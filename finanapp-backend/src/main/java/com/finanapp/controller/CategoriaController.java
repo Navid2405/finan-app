@@ -45,7 +45,9 @@ public class CategoriaController {
 
     @PatchMapping("/actualizar/{categoriaId}")
     @ResponseStatus(HttpStatus.OK)
-    public CategoriaResponseDto actualizarCategoria(@PathVariable Long categoriaId, @RequestBody CategoriaRequestActualizarDto actualizarDto){
-        return categoriaService.actualizarCategoria(categoriaId, actualizarDto);
+    public CategoriaResponseDto actualizarCategoria(@PathVariable Long categoriaId, @RequestBody CategoriaRequestActualizarDto actualizarDto,
+                                                    @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        return categoriaService.actualizarCategoria(usuarioId, categoriaId, actualizarDto);
     }
 }
