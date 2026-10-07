@@ -99,9 +99,20 @@ public class MetaAhorroService {
 
     // soft delete, desactivar caja de ahorro o meta
     @Transactional
-    public void eliminarMeta (Long metaId){
+    public void eliminarMeta ( Long usuarioId ,Long metaId){
         MetasAhorro meta = metaRepository.findById(metaId)
                 .orElseThrow(()-> new RuntimeException("No se encontro la meta con id: " + metaId));
+
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+
+        if (!usuario.isActivo()) {
+            throw new RuntimeException("El usuario no puede realizar esta accion");
+        }
+
+        if (meta.getUsuario().getId().equals(usuario.getId())){
+            throw new RuntimeException("No puedes eliminar esta categoria");
+        }
 
         meta.setEstado(EstadoMeta.CANCELADA);
 
@@ -109,10 +120,21 @@ public class MetaAhorroService {
 
     // actualizar caja de ahorro o meta
     @Transactional
-    public MetaAhorroResponseDto actualizarMeta(Long metaId, MetaAhorroRequestDto requestDto){
+    public MetaAhorroResponseDto actualizarMeta(Long usuarioId ,Long metaId, MetaAhorroRequestDto requestDto){
 
         MetasAhorro meta= metaRepository.findById(metaId)
                 .orElseThrow(()-> new RuntimeException("No exista el ahorro o meta con id: " + metaId));
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+
+        if (!usuario.isActivo()) {
+            throw new RuntimeException("El usuario no puede realizar esta accion");
+        }
+
+        if (meta.getUsuario().getId().equals(usuario.getId())){
+            throw new RuntimeException("No puedes modificar esta categoria");
+        }
+
         boolean cambios = false;
 
         if (requestDto.titulo() != null && !requestDto.titulo().isBlank()){

@@ -126,9 +126,20 @@ public class AporteAhorroService {
 
     // obtener historial de aportes por ahorro
     @Transactional(readOnly = true)
-    public List<AporteAhorroResponseDto> obtenerHistorial(Long metaId){
+    public List<AporteAhorroResponseDto> obtenerHistorial(Long usuarioId ,Long metaId){
         MetasAhorro meta= metaRepository.findById(metaId)
                 .orElseThrow(()-> new RuntimeException("No se encontro la meta con id: " + metaId));
+
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+
+        if (!usuario.isActivo()) {
+            throw new RuntimeException("El usuario no puede realizar esta accion");
+        }
+
+        if (meta.getUsuario().getId().equals(usuario.getId())){
+            throw new RuntimeException("No puedes obtener el historial de esta meta");
+        }
 
         List<AporteAhorro> historialAportes = aporteRepository.findByMetaIdOrderByFechaDesc(metaId);
 

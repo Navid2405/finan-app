@@ -42,7 +42,9 @@ public class AporteAhorroController {
 
     @GetMapping("/historial/{metaId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<AporteAhorroResponseDto> obtenerHistorial (@PathVariable Long metaId){
-        return aporteService.obtenerHistorial(metaId);
+    public List<AporteAhorroResponseDto> obtenerHistorial (@PathVariable Long metaId,
+                                                           @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        return aporteService.obtenerHistorial(usuarioId , metaId);
     }
 }

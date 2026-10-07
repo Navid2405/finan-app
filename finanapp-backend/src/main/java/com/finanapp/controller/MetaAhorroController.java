@@ -55,14 +55,17 @@ public class MetaAhorroController {
 
     @PatchMapping("/{metaId}")
     @ResponseStatus(HttpStatus.OK)
-    public MetaAhorroResponseDto actualizarMeta(@PathVariable Long metaId, @Valid@RequestBody MetaAhorroRequestDto requestDto){
-        return metaService.actualizarMeta(metaId, requestDto);
+    public MetaAhorroResponseDto actualizarMeta(@PathVariable Long metaId, @Valid@RequestBody MetaAhorroRequestDto requestDto,
+                                                @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        return metaService.actualizarMeta(usuarioId ,metaId, requestDto);
     }
 
     @DeleteMapping("/{metaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desactivarMeta(@PathVariable Long metaId){
-        metaService.eliminarMeta(metaId);
+    public void desactivarMeta(@PathVariable Long metaId , @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        metaService.eliminarMeta(usuarioId, metaId);
     }
 
 
