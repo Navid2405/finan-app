@@ -8,8 +8,7 @@ import java.time.LocalDate;
 public record MetaAhorroRequestDto(
         String titulo,
         BigDecimal montoObjetivo,
-        BigDecimal montoAcumulado,
-        LocalDate fechaLimite,
-        EstadoMeta estado
+        LocalDate fechaLimite
+
 ) {
 }
