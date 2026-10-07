@@ -1,9 +1,7 @@
 package com.finanapp.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import jdk.jfr.Enabled;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,6 +52,8 @@ public class ObligacionRecurrente {
 
     @Positive
     @Column(nullable = false, name = "dia_limite_pago")
+    @Min(1)
+    @Max(31)
     private Integer diaLimitePago;
 
     @Column(nullable = false)

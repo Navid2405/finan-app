@@ -4,7 +4,7 @@ import com.finanapp.model.Categoria;
 import com.finanapp.model.TipoTransaccion;
 
 public record CategoriaResponseDto(
-        Long Id,
+        Long id,
         Long usuarioId,
         String nombre,
         TipoTransaccion tipoTransaccion,

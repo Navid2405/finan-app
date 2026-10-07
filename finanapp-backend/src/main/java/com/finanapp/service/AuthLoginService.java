@@ -28,7 +28,7 @@ public class AuthLoginService {
     private final JwtEncoder jwtEncoder;
 
     @Value("${jwt.expiration-minutes:120}")
-    private long expiracionEnMinutos;
+    private long expiracionEnSegundos;
     public AuthLoginResponseDto login (AuthLoginRequestDto requestDto){
         Usuario usuario = usuarioRepository.findByEmail(requestDto.email())
                 .orElseThrow(()-> new RuntimeException("El email no existe"));
@@ -42,14 +42,14 @@ public class AuthLoginService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(String.valueOf(usuario.getId()))
                 .issuedAt(ahora)
-                .expiresAt(ahora.plus(expiracionEnMinutos, ChronoUnit.MINUTES))
+                .expiresAt(ahora.plus(expiracionEnSegundos, ChronoUnit.MINUTES))
                 .claim("email", usuario.getEmail())
                 .build();
 
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
         String token = jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
 
-        return new AuthLoginResponseDto(token, "Bearer", expiracionEnMinutos * 60,
+        return new AuthLoginResponseDto(token, "Bearer", expiracionEnSegundos * 60,
                 UsuarioResponseDto.fromEntity(usuario));
     }
 

@@ -1,9 +1,7 @@
 package com.finanapp.dto;
 
 import com.finanapp.model.Frecuencia;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,7 +17,9 @@ public record ObligacionRecurrenteRequestDto(
         @NotNull(message = "La frecuencia no puede estar vacia")
         Frecuencia frecuencia,
 
-        Integer fechaLimitePago,
+        @Min(1)
+        @Max(31)
+        Integer diaLimitePago,
 
         @NotNull(message = "La fecha no puede limite no puede estar vacia")
         LocalDate proximoVencimiento

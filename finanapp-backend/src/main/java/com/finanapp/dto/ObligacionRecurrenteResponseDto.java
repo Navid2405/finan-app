@@ -15,7 +15,7 @@ public record ObligacionRecurrenteResponseDto(
         BigDecimal monto,
         BigDecimal saldoPendiente,
         Frecuencia frecuencia,
-        Integer fechaLimitePago,
+        Integer diaLimitePago,
         LocalDate proximoVencimiento,
         EstadoObligacion estado,
         boolean activa
