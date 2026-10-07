@@ -74,11 +74,20 @@ public class TransaccionService {
 
     //Eliminar traansaccion
     @Transactional
-    public void eliminarTransaccion(Long id) {
-        Transaccion transaccion = transaccionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaccion no encontrada con ID: " + id));
+    public void eliminarTransaccion(Long usuarioId, Long transaccionId) {
+        Transaccion transaccion = transaccionRepository.findById(transaccionId)
+                .orElseThrow(() -> new RuntimeException("Transaccion no encontrada con ID: " + transaccionId));
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(()-> new RuntimeException("No se encontro al usuario con Id: " + usuarioId));
 
-        if (pagoRepository.existsByTransaccionId(id)){
+        if (!usuario.isActivo()){
+            throw new RuntimeException("No puede realizar esta accion");
+        }
+
+        if (!transaccion.getUsuario().getId().equals(usuario.getId())){
+            throw new RuntimeException("Acceso denegado: No puedes eliminar esta transaccion");
+        }
+        if (pagoRepository.existsByTransaccionId(transaccionId)){
             throw new RuntimeException("No se puede eliminar esta transaccio. Es un registro contable de un pago ya realizado");
         }
         transaccionRepository.delete(transaccion);
@@ -86,10 +95,20 @@ public class TransaccionService {
 
     // Actualizar parcialmente una transaccion (UPDATE)
     @Transactional
-    public TransaccionResponseDto actualizarTransaccion(Long id, TransaccionRequestActualizarDto requestActualizarDto) {
-        Transaccion actTransaccion = transaccionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaccion no encontrada con ID: " + id));
+    public TransaccionResponseDto actualizarTransaccion(Long usuarioId ,Long transaccionId, TransaccionRequestActualizarDto requestActualizarDto) {
+        Transaccion actTransaccion = transaccionRepository.findById(transaccionId)
+                .orElseThrow(() -> new RuntimeException("Transaccion no encontrada con ID: " + transaccionId));
 
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(()-> new RuntimeException("No se encontro al usuario con Id: " + usuarioId));
+
+        if (!usuario.isActivo()){
+            throw new RuntimeException("No puede realizar esta accion");
+        }
+
+        if (!actTransaccion.getUsuario().getId().equals(usuario.getId())){
+            throw new RuntimeException("Acceso denegado: No puedes modificar esta transaccion");
+        }
         boolean cambios = false;
 
         if (requestActualizarDto.tipoTransaccion() != null) {

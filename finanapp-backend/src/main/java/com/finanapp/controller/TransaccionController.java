@@ -41,16 +41,20 @@ public class TransaccionController {
         return transaccionService.obtenerTransaccionesDeUsuario(usuarioId, fecha);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{transaccionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarTransaccion(@PathVariable Long id){
-         transaccionService.eliminarTransaccion(id);
+    public void eliminarTransaccion(@PathVariable Long transaccionId,
+                                    @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        transaccionService.eliminarTransaccion(usuarioId, transaccionId);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{categoriaId}")
     @ResponseStatus(HttpStatus.OK)
-    public TransaccionResponseDto actualizarTransaccion(@PathVariable Long id, @RequestBody TransaccionRequestActualizarDto actualizarDto){
-        return transaccionService.actualizarTransaccion(id, actualizarDto);
+    public TransaccionResponseDto actualizarTransaccion(@PathVariable Long categoriaId, @RequestBody TransaccionRequestActualizarDto actualizarDto,
+                                                        @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        return transaccionService.actualizarTransaccion(usuarioId,categoriaId, actualizarDto);
     }
 
     @GetMapping("/usuario/balance")
