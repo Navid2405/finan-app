@@ -110,7 +110,7 @@ public class MetaAhorroService {
             throw new RuntimeException("El usuario no puede realizar esta accion");
         }
 
-        if (meta.getUsuario().getId().equals(usuario.getId())){
+        if (!meta.getUsuario().getId().equals(usuario.getId())){
             throw new RuntimeException("No puedes eliminar esta categoria");
         }
 
@@ -131,7 +131,7 @@ public class MetaAhorroService {
             throw new RuntimeException("El usuario no puede realizar esta accion");
         }
 
-        if (meta.getUsuario().getId().equals(usuario.getId())){
+        if (!meta.getUsuario().getId().equals(usuario.getId())){
             throw new RuntimeException("No puedes modificar esta categoria");
         }
 

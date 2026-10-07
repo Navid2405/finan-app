@@ -137,7 +137,7 @@ public class AporteAhorroService {
             throw new RuntimeException("El usuario no puede realizar esta accion");
         }
 
-        if (meta.getUsuario().getId().equals(usuario.getId())){
+        if (!meta.getUsuario().getId().equals(usuario.getId())){
             throw new RuntimeException("No puedes obtener el historial de esta meta");
         }
 
