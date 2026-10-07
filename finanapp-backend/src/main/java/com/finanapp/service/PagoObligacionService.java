@@ -39,8 +39,9 @@ public class PagoObligacionService {
         if (!obligacion.isActiva()) {
             throw new RuntimeException("La obligación se encuentra inactiva");
         }
-        if (!obligacion.getUsuario().getId().equals(usuario.getId())) {
-            throw new RuntimeException("Esta obligación no pertenece al usuario especificado");
+
+        if (  categoria.getUsuario() != null && !categoria.getUsuario().getId().equals(usuario.getId()) ){
+            throw new RuntimeException("No se puede acceder a esta categoria o no existe");
         }
         LocalDate fechaPago= (requestDto.fechaPago() != null) ? requestDto.fechaPago() : LocalDate.now() ;
 

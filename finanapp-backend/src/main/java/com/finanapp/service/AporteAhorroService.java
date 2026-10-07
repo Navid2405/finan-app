@@ -88,8 +88,8 @@ public class AporteAhorroService {
             throw new RuntimeException("No se puede retirar de un ahorro cancelado");
         }
 
-        if (!usuario.getId().equals(meta.getUsuario().getId())){
-            throw new RuntimeException("No puedes realizar esta accion");
+        if (  categoria.getUsuario() != null && !categoria.getUsuario().getId().equals(usuario.getId()) ){
+            throw new RuntimeException("No se puede acceder a esta categoria o no existe");
         }
 
         BigDecimal acumuladoActual = meta.getMontoAcumulado() != null ? meta.getMontoAcumulado() : BigDecimal.ZERO;

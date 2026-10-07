@@ -39,6 +39,10 @@ public class TransaccionService {
         if (!usuario.isActivo()) {
             throw new RuntimeException("No se puede realizar con un usuario INACTIVO");
         }
+        if (  categoria.getUsuario() != null && !categoria.getUsuario().getId().equals(usuario.getId()) ){
+            throw new RuntimeException("No se puede acceder a esta categoria o no existe");
+        }
+
 
         Transaccion nuevaTransaccion = Transaccion.builder()
                 .usuario(usuario)
