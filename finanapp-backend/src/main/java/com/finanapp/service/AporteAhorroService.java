@@ -34,6 +34,10 @@ public class AporteAhorroService {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
 
+        Categoria categoria = categoriaRepository.findById(requestDto.categoriaId())
+                .orElseThrow(()-> new RuntimeException("No se encontro categoria con id: " + requestDto.categoriaId()));
+
+
         if (!usuario.isActivo()) {
             throw new RuntimeException("El usuario no puede realizar esta accion");
         }
@@ -46,13 +50,31 @@ public class AporteAhorroService {
             throw new RuntimeException("No puedes realizar esta accion");
         }
 
+        if (categoria.getUsuario() != null && !categoria.getUsuario().getId().equals(usuario.getId()) ){
+            throw new RuntimeException("No se puede acceder a esta categoria o no existe");
+        }
+
         LocalDate fecha = (requestDto.fecha()!= null)? requestDto.fecha() : LocalDate.now();
+
         AporteAhorro nuevoAporte = AporteAhorro.builder()
                 .meta(meta)
                 .monto(requestDto.monto())
                 .fecha(fecha)
                 .nota(requestDto.nota())
                 .build();
+
+        Transaccion transaccion = Transaccion.builder()
+                .usuario(usuario)
+                .categoria(categoria)
+                .tipoTransaccion(TipoTransaccion.INGRESO)
+                .monto(nuevoAporte.getMonto())
+                .descripcion(requestDto.nota())
+                .metodoPago(requestDto.metodoPago())
+                .fecha(fecha)
+                .build();
+
+        transaccionRepository.save(transaccion);
+
 
         BigDecimal acumuladoActual = meta.getMontoAcumulado() != null ? meta.getMontoAcumulado() : BigDecimal.ZERO;
         BigDecimal nuevoAcumulado = acumuladoActual.add(nuevoAporte.getMonto());
@@ -86,6 +108,9 @@ public class AporteAhorroService {
 
         if (meta.getEstado() == EstadoMeta.CANCELADA){
             throw new RuntimeException("No se puede retirar de un ahorro cancelado");
+        }
+        if (!usuario.getId().equals(meta.getUsuario().getId())){
+            throw new RuntimeException("No puedes realizar esta accion");
         }
 
         if (  categoria.getUsuario() != null && !categoria.getUsuario().getId().equals(usuario.getId()) ){
