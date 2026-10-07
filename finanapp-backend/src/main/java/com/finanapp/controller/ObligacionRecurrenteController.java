@@ -45,16 +45,19 @@ public class ObligacionRecurrenteController {
         return obligacionRecurrenteService.obtenerObligacionesActivas(usuarioId);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{categoriaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desactivarObligacion (@PathVariable Long id){
-        obligacionRecurrenteService.desactivarObligacion(id);
+    public void desactivarObligacion (@PathVariable Long categoriaId, @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId= Long.valueOf(jwt.getSubject());
+        obligacionRecurrenteService.desactivarObligacion(usuarioId ,categoriaId);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{categoriaId}")
     @ResponseStatus(HttpStatus.OK)
-    public ObligacionRecurrenteResponseDto actualizarObligacion(@PathVariable Long id,@Valid @RequestBody ObligacionRecurrenteRequestActualizarDto actualizarDto){
-        return  obligacionRecurrenteService.actualizarObligacion(id, actualizarDto);
+    public ObligacionRecurrenteResponseDto actualizarObligacion(@PathVariable Long categoriaId,@Valid @RequestBody ObligacionRecurrenteRequestActualizarDto actualizarDto,
+                                                                @AuthenticationPrincipal Jwt jwt){
+        Long usuarioId= Long.valueOf(jwt.getSubject());
+        return  obligacionRecurrenteService.actualizarObligacion(usuarioId ,categoriaId, actualizarDto);
     }
 
     @GetMapping("/usuario/cuota-seguridad")

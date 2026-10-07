@@ -85,11 +85,21 @@ public class PagoObligacionService {
 
     //Obtener todo el historial de pago de un usuario por obligacion
     @Transactional(readOnly = true)
-    public List<PagoObligacionResponseDto> obtnerHistorialPagosPorObligacion(Long obligacionId){
+    public List<PagoObligacionResponseDto> obtnerHistorialPagosPorObligacion(Long usuarioId, Long obligacionId){
         ObligacionRecurrente obligacion = obligacionRecurrenteRepository.findById(obligacionId)
                 .orElseThrow(() -> new RuntimeException("No se encontro obligacion con el id: " + obligacionId));
 
 
+        Usuario usuario= usuarioRepository.findById(usuarioId)
+                .orElseThrow(()-> new RuntimeException("No se encontro al usuario con Id: " + usuarioId));
+
+        if (!usuario.isActivo()){
+            throw new RuntimeException("El usuario no puede realoizar esta accion");
+        }
+
+        if (!obligacion.getUsuario().getId().equals(usuario.getId())) {
+            throw new RuntimeException("Acceso denegado");
+        }
         List<PagoObligacion> pagos = pagoObligacionRepository.findByObligacionId(obligacionId);
 
         return pagos.stream().map(PagoObligacionResponseDto ::fromEntity).toList();

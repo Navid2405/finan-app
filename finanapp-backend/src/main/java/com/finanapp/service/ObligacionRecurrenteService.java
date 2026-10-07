@@ -83,9 +83,18 @@ public class ObligacionRecurrenteService {
 
     //Desactivar una obligacion (Soft Delete)
     @Transactional
-    public void desactivarObligacion (Long obligacionId){
+    public void desactivarObligacion (Long usuarioId , Long obligacionId){
         ObligacionRecurrente obligacion = obligacionRepository.findById(obligacionId)
                 .orElseThrow(()-> new RuntimeException("No se encontro la obligacion con id: " +obligacionId));
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+
+        if (!usuario.isActivo()){
+            throw new RuntimeException("El usuario no puede realizar esta accion");
+        }
+        if (!obligacion.getUsuario().getId().equals(usuario.getId())){
+            throw new RuntimeException("Acceso denegado: No puedes eliminar esta obligacion");
+        }
 
         obligacion.setActiva(false);
 
@@ -93,11 +102,20 @@ public class ObligacionRecurrenteService {
 
     // ActualizarTransaccion
     @Transactional
-    public ObligacionRecurrenteResponseDto actualizarObligacion(Long obligacionId, ObligacionRecurrenteRequestActualizarDto actualizarDto){
+    public ObligacionRecurrenteResponseDto actualizarObligacion(Long usuarioId, Long obligacionId, ObligacionRecurrenteRequestActualizarDto actualizarDto){
         ObligacionRecurrente obligacion = obligacionRepository.findById(obligacionId)
                 .orElseThrow(()-> new RuntimeException("No se encontro la obligacion con id: " +obligacionId));
 
 
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+
+        if (!usuario.isActivo()){
+            throw new RuntimeException("El usuario no puede realizar esta accion");
+        }
+        if (!obligacion.getUsuario().getId().equals(usuario.getId())){
+            throw new RuntimeException("Acceso denegado: No puedes modificar esta obligacion");
+        }
         boolean cambios = false;
 
         if ( actualizarDto.nombre() != null &&!actualizarDto.nombre().isBlank() ){
