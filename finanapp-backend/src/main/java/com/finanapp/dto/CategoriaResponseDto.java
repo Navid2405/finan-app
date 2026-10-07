@@ -14,7 +14,7 @@ public record CategoriaResponseDto(
     public static CategoriaResponseDto fromEntity(Categoria categoria){
         return new CategoriaResponseDto(
                 categoria.getId(),
-                categoria.getUsuario().getId(),
+                categoria.getUsuario() != null ? categoria.getUsuario().getId() : null,
                 categoria.getNombre(),
                 categoria.getTipo(),
                 categoria.getIcono()
