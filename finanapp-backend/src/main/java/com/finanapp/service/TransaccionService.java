@@ -7,6 +7,7 @@ import com.finanapp.model.TipoTransaccion;
 import com.finanapp.model.Transaccion;
 import com.finanapp.model.Usuario;
 import com.finanapp.repository.CategoriaRepository;
+import com.finanapp.repository.PagoObligacionRepository;
 import com.finanapp.repository.TransaccionRepository;
 import com.finanapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class TransaccionService {
     private final TransaccionRepository transaccionRepository;
     private final CategoriaRepository categoriaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final PagoObligacionRepository pagoRepository;
 
     // Crear Transaccion (CREATE)
     @Transactional
@@ -76,6 +78,9 @@ public class TransaccionService {
         Transaccion transaccion = transaccionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaccion no encontrada con ID: " + id));
 
+        if (pagoRepository.existsByTransaccionId(id)){
+            throw new RuntimeException("No se puede eliminar esta transaccio. Es un registro contable de un pago ya realizado");
+        }
         transaccionRepository.delete(transaccion);
     }
 
