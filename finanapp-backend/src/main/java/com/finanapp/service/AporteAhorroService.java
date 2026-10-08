@@ -71,7 +71,7 @@ public class AporteAhorroService {
                 .categoria(categoria)
                 .tipoTransaccion(TipoTransaccion.INGRESO)
                 .monto(nuevoAporte.getMonto())
-                .descripcion(requestDto.nota())
+                .descripcion(requestDto.nota() != null ? requestDto.nota() : null)
                 .metodoPago(requestDto.metodoPago())
                 .fecha(fecha)
                 .build();
@@ -133,7 +133,7 @@ public class AporteAhorroService {
                 .categoria(categoria)
                 .tipoTransaccion(TipoTransaccion.GASTO)
                 .monto(requestDto.montoRetiro())
-                .descripcion(requestDto.descripcion())
+                .descripcion(requestDto.descripcion() != null ? requestDto.descripcion() : null)
                 .metodoPago(requestDto.metodoPago())
                 .fecha(fecha)
                 .build();

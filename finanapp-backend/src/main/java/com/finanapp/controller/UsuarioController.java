@@ -43,7 +43,7 @@ public class UsuarioController {
 
     @PatchMapping("/actualizar")
     @ResponseStatus(HttpStatus.OK)
-    public UsuarioResponseDto actualizarUsuario(@RequestBody UsuarioRequestActualizarDto actualizarDto,
+    public UsuarioResponseDto actualizarUsuario(@Valid @RequestBody UsuarioRequestActualizarDto actualizarDto,
                                                 @AuthenticationPrincipal Jwt jwt){
         Long usuarioId= Long.valueOf(jwt.getSubject());
         return usuarioService.actualizarUsuario(usuarioId, actualizarDto );
