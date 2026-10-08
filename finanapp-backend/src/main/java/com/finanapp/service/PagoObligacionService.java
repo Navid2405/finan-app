@@ -61,24 +61,24 @@ public class PagoObligacionService {
                 .fecha(fechaPago)
                 .build();
 
-        Transaccion transaccionGuardada = transaccionRepository.save(transaccion);
-
         PagoObligacion pago= PagoObligacion.builder()
                 .obligacion(obligacion)
-                .transaccion(transaccionGuardada)
+                .transaccion(transaccion)
                 .montoPagado(requestDto.montoPagado())
                 .fechaPago(fechaPago)
                 .build();
+
 
 
         if (pago.getMontoPagado().compareTo(obligacion.getSaldoPendiente()) > 0){
             throw new BadRequestException("No se puede realizar un pago mayor a lo restante");
         }
 
+        transaccionRepository.save(transaccion);
+
         BigDecimal nuevoSaldo = obligacion.getSaldoPendiente().subtract(requestDto.montoPagado());
 
         if (nuevoSaldo.compareTo(BigDecimal.ZERO) <= 0) {
-            obligacion.setEstado(EstadoObligacion.PAGADA);
             obligacion.setSaldoPendiente(obligacion.getMonto());
             switch (obligacion.getFrecuencia()) {
                 case DIARIA -> obligacion.setProximoVencimiento(obligacion.getProximoVencimiento().plusDays(1));

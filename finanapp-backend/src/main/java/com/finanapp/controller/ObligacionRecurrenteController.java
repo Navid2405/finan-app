@@ -46,19 +46,19 @@ public class ObligacionRecurrenteController {
         return obligacionRecurrenteService.obtenerObligacionesActivas(usuarioId);
     }
 
-    @DeleteMapping("/{categoriaId}")
+    @DeleteMapping("/{obligacionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desactivarObligacion (@PathVariable Long categoriaId, @AuthenticationPrincipal Jwt jwt){
+    public void desactivarObligacion (@PathVariable Long obligacionId, @AuthenticationPrincipal Jwt jwt){
         Long usuarioId= Long.valueOf(jwt.getSubject());
-        obligacionRecurrenteService.desactivarObligacion(usuarioId ,categoriaId);
+        obligacionRecurrenteService.desactivarObligacion(usuarioId ,obligacionId);
     }
 
-    @PatchMapping("/{categoriaId}")
+    @PatchMapping("/{obligacionId}")
     @ResponseStatus(HttpStatus.OK)
-    public ObligacionRecurrenteResponseDto actualizarObligacion(@PathVariable Long categoriaId,@Valid @RequestBody ObligacionRecurrenteRequestActualizarDto actualizarDto,
+    public ObligacionRecurrenteResponseDto actualizarObligacion(@PathVariable Long obligacionId,@Valid @RequestBody ObligacionRecurrenteRequestActualizarDto actualizarDto,
                                                                 @AuthenticationPrincipal Jwt jwt){
         Long usuarioId= Long.valueOf(jwt.getSubject());
-        return  obligacionRecurrenteService.actualizarObligacion(usuarioId ,categoriaId, actualizarDto);
+        return  obligacionRecurrenteService.actualizarObligacion(usuarioId ,obligacionId, actualizarDto);
     }
 
     @GetMapping("/{estado}")

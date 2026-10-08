@@ -30,14 +30,14 @@ public class MetaAhorroController {
         return metaService.crearMeta(usuarioId, requestDto);
     }
 
-    @GetMapping("/metas")
+    @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public List<MetaAhorroResponseDto> obtenerMetasDeUsuario( @AuthenticationPrincipal Jwt jwt){
         Long usuarioId = Long.valueOf(jwt.getSubject());
         return metaService.obtenerMetasPorUsuarioId(usuarioId);
     }
 
-    @GetMapping("/metas/" )
+    @GetMapping("/metas" )
     @ResponseStatus(HttpStatus.OK)
     public List<MetaAhorroResponseDto> obtenerMetasPorIdYEstado (@AuthenticationPrincipal Jwt jwt,
                                                                  @RequestParam(defaultValue = "EN_PROGRESO") EstadoMeta estadoMeta){
@@ -46,7 +46,7 @@ public class MetaAhorroController {
         return metaService.obtenerMetasPorIdyEstado(usuarioId, estadoMeta);
     }
 
-    @GetMapping()
+    @GetMapping("api/ahorrado")
     @ResponseStatus(HttpStatus.OK)
     public BigDecimal totalAhorro(@AuthenticationPrincipal Jwt jwt,
                                   @RequestParam(defaultValue = "EN_PROGRESO") EstadoMeta estadoMeta) {

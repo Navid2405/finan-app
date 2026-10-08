@@ -48,12 +48,12 @@ public class TransaccionController {
         transaccionService.eliminarTransaccion(usuarioId, transaccionId);
     }
 
-    @PatchMapping("/{categoriaId}")
+    @PatchMapping("/{transaccionId}")
     @ResponseStatus(HttpStatus.OK)
-    public TransaccionResponseDto actualizarTransaccion(@PathVariable Long categoriaId, @RequestBody TransaccionRequestActualizarDto actualizarDto,
+    public TransaccionResponseDto actualizarTransaccion(@PathVariable Long transaccionId,@Valid @RequestBody TransaccionRequestActualizarDto actualizarDto,
                                                         @AuthenticationPrincipal Jwt jwt){
         Long usuarioId = Long.valueOf(jwt.getSubject());
-        return transaccionService.actualizarTransaccion(usuarioId,categoriaId, actualizarDto);
+        return transaccionService.actualizarTransaccion(usuarioId,transaccionId, actualizarDto);
     }
 
     @GetMapping("/usuario/balance")

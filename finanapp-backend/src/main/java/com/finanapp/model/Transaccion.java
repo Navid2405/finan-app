@@ -45,8 +45,7 @@ public class Transaccion {
     @Column(nullable = false, precision = 12, scale = 2  )
     private BigDecimal monto;
 
-    @NotBlank(message = "La descripcion no puede estar vacia")
-    @Column(nullable = false, length = 100)
+    @Column( length = 100)
     private String descripcion;
 
     @NotBlank(message = "El metodo de pago no puede estar vacio")
