@@ -23,11 +23,11 @@ public class PagoObligacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "obligacion_id")
     private ObligacionRecurrente obligacion;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "transaccion_id")
     private Transaccion transaccion;
 

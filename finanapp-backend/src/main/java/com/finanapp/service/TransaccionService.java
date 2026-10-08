@@ -158,6 +158,7 @@ public class TransaccionService {
 
     //Calculo de balance diario
 
+    @Transactional(readOnly = true)
     public BalanceDiarioDto balanceDiario(Long id, LocalDate fecha){
         Usuario usuario = usuarioRepository.findById(id).
                 orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
