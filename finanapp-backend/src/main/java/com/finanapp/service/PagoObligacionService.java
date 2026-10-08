@@ -79,7 +79,8 @@ public class PagoObligacionService {
         BigDecimal nuevoSaldo = obligacion.getSaldoPendiente().subtract(requestDto.montoPagado());
 
         if (nuevoSaldo.compareTo(BigDecimal.ZERO) <= 0) {
-            obligacion.setSaldoPendiente(obligacion.getMonto());
+            obligacion.setSaldoPendiente(BigDecimal.ZERO);
+            obligacion.setEstado(EstadoObligacion.PAGADA);
             switch (obligacion.getFrecuencia()) {
                 case DIARIA -> obligacion.setProximoVencimiento(obligacion.getProximoVencimiento().plusDays(1));
                 case SEMANAL -> obligacion.setProximoVencimiento(obligacion.getProximoVencimiento().plusWeeks(1));

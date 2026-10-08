@@ -46,7 +46,7 @@ public class MetaAhorroController {
         return metaService.obtenerMetasPorIdyEstado(usuarioId, estadoMeta);
     }
 
-    @GetMapping("api/ahorrado")
+    @GetMapping("/ahorrado")
     @ResponseStatus(HttpStatus.OK)
     public BigDecimal totalAhorro(@AuthenticationPrincipal Jwt jwt,
                                   @RequestParam(defaultValue = "EN_PROGRESO") EstadoMeta estadoMeta) {
