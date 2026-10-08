@@ -1,8 +1,6 @@
 package com.finanapp.controller;
 
-import com.finanapp.dto.ObligacionRecurrenteRequestActualizarDto;
-import com.finanapp.dto.ObligacionRecurrenteRequestDto;
-import com.finanapp.dto.ObligacionRecurrenteResponseDto;
+import com.finanapp.dto.*;
 import com.finanapp.service.ObligacionRecurrenteService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -59,9 +57,10 @@ public class ObligacionRecurrenteController {
 
     @GetMapping("/usuario/cuota-seguridad")
     @ResponseStatus(HttpStatus.OK)
-    public BigDecimal cuotaSeguridad(@AuthenticationPrincipal Jwt jwt){
+    public CuotaSeguridadResponseDto cuotaSeguridad(@AuthenticationPrincipal Jwt jwt){
         Long usuarioId= Long.valueOf(jwt.getSubject());
-        return obligacionRecurrenteService.obtenerCuotaDiariaSeguridad(usuarioId);
+        BigDecimal cuota =obligacionRecurrenteService.obtenerCuotaDiariaSeguridad(usuarioId);
+        return new CuotaSeguridadResponseDto(cuota != null ? cuota : BigDecimal.ZERO);
     }
 
 }
