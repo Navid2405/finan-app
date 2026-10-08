@@ -23,7 +23,7 @@ public class TransaccionController {
     private final TransaccionService transaccionService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     public TransaccionResponseDto crearTransaccion( @Valid @RequestBody TransaccionRequestDto transaccionRequestDto,
                                                     @AuthenticationPrincipal Jwt jwt){
         Long usuarioId = Long.valueOf(jwt.getSubject());

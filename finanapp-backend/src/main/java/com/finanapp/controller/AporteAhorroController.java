@@ -30,7 +30,7 @@ public class AporteAhorroController {
         return aporteService.crearAporte(usuarioId, requestDto);
     }
 
-    @PutMapping("/retiro")
+    @PostMapping("/retiro")
     @ResponseStatus(HttpStatus.OK)
     public MetaAhorroResponseDto retirarDinero (@Valid @RequestBody RetiroAhorroRequestDto requestDto,
                                                 @AuthenticationPrincipal Jwt jwt){

@@ -21,7 +21,7 @@ public class CategoriaController {
     private final CategoriaService categoriaService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     public CategoriaResponseDto crearCategoria (@Valid @RequestBody CategoriaRequestDto requestDto,
                                                 @AuthenticationPrincipal Jwt jwt){
         Long usuarioId = Long.valueOf(jwt.getSubject());
