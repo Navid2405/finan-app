@@ -57,6 +57,9 @@ public class AporteAhorroService {
             throw new ForbiddenActionException("No se puede acceder a esta categoria o no existe");
         }
 
+        String descripcionTransaccion = (requestDto.nota() != null && !requestDto.nota().isBlank())
+                ? requestDto.nota() : "Aporte a meta: " + meta.getTitulo();
+
         LocalDate fecha = (requestDto.fecha()!= null)? requestDto.fecha() : LocalDate.now();
 
         AporteAhorro nuevoAporte = AporteAhorro.builder()
@@ -69,9 +72,9 @@ public class AporteAhorroService {
         Transaccion transaccion = Transaccion.builder()
                 .usuario(usuario)
                 .categoria(categoria)
-                .tipoTransaccion(TipoTransaccion.INGRESO)
+                .tipoTransaccion(TipoTransaccion.GASTO)
                 .monto(nuevoAporte.getMonto())
-                .descripcion(requestDto.nota() != null ? requestDto.nota() : null)
+                .descripcion(descripcionTransaccion)
                 .metodoPago(requestDto.metodoPago())
                 .fecha(fecha)
                 .build();
@@ -126,14 +129,17 @@ public class AporteAhorroService {
             throw new BadRequestException("Saldo insuficiente");
         }
 
+        String descripcionRetiro = (requestDto.descripcion() != null && !requestDto.descripcion().isBlank())
+                ? requestDto.descripcion() : "Retiro de meta: " + meta.getTitulo();
+
         LocalDate fecha = (requestDto.fecha() != null) ? requestDto.fecha() : LocalDate.now();
 
         Transaccion transaccion = Transaccion.builder()
                 .usuario(usuario)
                 .categoria(categoria)
-                .tipoTransaccion(TipoTransaccion.GASTO)
+                .tipoTransaccion(TipoTransaccion.INGRESO)
                 .monto(requestDto.montoRetiro())
-                .descripcion(requestDto.descripcion() != null ? requestDto.descripcion() : null)
+                .descripcion(descripcionRetiro)
                 .metodoPago(requestDto.metodoPago())
                 .fecha(fecha)
                 .build();

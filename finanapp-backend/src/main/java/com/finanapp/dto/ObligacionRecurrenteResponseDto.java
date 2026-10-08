@@ -23,7 +23,7 @@ public record ObligacionRecurrenteResponseDto(
 
 ) {
 
-    public static EstadoObligacion calcularEstado(BigDecimal saldoPendiente, LocalDate proximoVencimiento){
+    private static EstadoObligacion calcularEstado(BigDecimal saldoPendiente, LocalDate proximoVencimiento){
         if (saldoPendiente.compareTo(BigDecimal.ZERO)<=0){
             return EstadoObligacion.PAGADA;
         }
@@ -43,7 +43,7 @@ public record ObligacionRecurrenteResponseDto(
                 obligacion.getFrecuencia(),
                 obligacion.getDiaLimitePago(),
                 obligacion.getProximoVencimiento(),
-                calcularEstado(obligacion.getSaldoPendiente(), obligacion.getProximoVencimiento()),
+                obligacion.getEstado(),
                 obligacion.isActiva()
         );
 

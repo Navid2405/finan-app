@@ -196,11 +196,24 @@ public class ObligacionRecurrenteService {
 
 
     private void verificarYActualizarVencimiento(ObligacionRecurrente obligacion) {
-        if (obligacion.getEstado() == EstadoObligacion.PENDIENTE
-                && obligacion.getProximoVencimiento() != null
-                && LocalDate.now().isAfter(obligacion.getProximoVencimiento())) {
 
+        LocalDate hoy = LocalDate.now();
+        if (obligacion.getProximoVencimiento() == null) return;
+
+        if (obligacion.getEstado() == EstadoObligacion.PENDIENTE && hoy.isAfter(obligacion.getProximoVencimiento())) {
             obligacion.setEstado(EstadoObligacion.VENCIDA);
+            obligacionRepository.save(obligacion);
+        }
+
+        else if (obligacion.getEstado() == EstadoObligacion.PAGADA && hoy.isAfter(obligacion.getProximoVencimiento())) {
+            obligacion.setSaldoPendiente(obligacion.getMonto());
+            obligacion.setEstado(EstadoObligacion.PENDIENTE);
+            switch (obligacion.getFrecuencia()) {
+                case DIARIA -> obligacion.setProximoVencimiento(obligacion.getProximoVencimiento().plusDays(1));
+                case SEMANAL -> obligacion.setProximoVencimiento(obligacion.getProximoVencimiento().plusWeeks(1));
+                case QUINCENAL -> obligacion.setProximoVencimiento(obligacion.getProximoVencimiento().plusDays(15));
+                case MENSUAL -> obligacion.setProximoVencimiento(obligacion.getProximoVencimiento().plusMonths(1));
+            }
             obligacionRepository.save(obligacion);
         }
     }
