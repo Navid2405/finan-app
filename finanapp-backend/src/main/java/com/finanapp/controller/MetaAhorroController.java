@@ -2,6 +2,7 @@ package com.finanapp.controller;
 
 import com.finanapp.dto.MetaAhorroRequestDto;
 import com.finanapp.dto.MetaAhorroResponseDto;
+import com.finanapp.dto.TotalAhorradoResponseDto;
 import com.finanapp.model.EstadoMeta;
 import com.finanapp.service.MetaAhorroService;
 import jakarta.validation.Valid;
@@ -47,10 +48,11 @@ public class MetaAhorroController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public BigDecimal totalAhorro(@AuthenticationPrincipal Jwt jwt,
-                                  @RequestParam(defaultValue = "EN_PROGRESO") EstadoMeta estadoMeta) {
+    public TotalAhorradoResponseDto totalAhorro(@AuthenticationPrincipal Jwt jwt,
+                                                @RequestParam(defaultValue = "EN_PROGRESO") EstadoMeta estadoMeta) {
         Long usuarioId = Long.valueOf(jwt.getSubject());
-        return  metaService.totalAhorrado(usuarioId, estadoMeta);
+        BigDecimal total = metaService.totalAhorrado(usuarioId, estadoMeta);
+        return new TotalAhorradoResponseDto(total != null ? total : BigDecimal.ZERO );
     }
 
     @PatchMapping("/{metaId}")
