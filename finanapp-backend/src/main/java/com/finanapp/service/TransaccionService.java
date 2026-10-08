@@ -2,6 +2,9 @@ package com.finanapp.service;
 
 
 import com.finanapp.dto.*;
+import com.finanapp.exception.BadRequestException;
+import com.finanapp.exception.ForbiddenActionException;
+import com.finanapp.exception.ResourceNotFoundException;
 import com.finanapp.model.Categoria;
 import com.finanapp.model.TipoTransaccion;
 import com.finanapp.model.Transaccion;
@@ -31,16 +34,16 @@ public class TransaccionService {
     @Transactional
     public TransaccionResponseDto crearTransaccion(Long usuarioId,TransaccionRequestDto requestDto) {
         Usuario usuario = usuarioRepository.findById(usuarioId).
-                orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + usuarioId));
+                orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + usuarioId));
 
         Categoria categoria = categoriaRepository.findById(requestDto.categoriaId()).
-                orElseThrow(() -> new RuntimeException("Categoria no encontrada con ID: " + requestDto.categoriaId()));
+                orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada con ID: " + requestDto.categoriaId()));
 
         if (!usuario.isActivo()) {
-            throw new RuntimeException("No se puede realizar con un usuario INACTIVO");
+            throw new BadRequestException("No se puede realizar con un usuario INACTIVO");
         }
         if (  categoria.getUsuario() != null && !categoria.getUsuario().getId().equals(usuario.getId()) ){
-            throw new RuntimeException("No se puede acceder a esta categoria o no existe");
+            throw new ForbiddenActionException("No se puede acceder a esta categoria o no existe");
         }
 
 
@@ -63,9 +66,9 @@ public class TransaccionService {
     public List<TransaccionResponseDto> obtenerTransaccionesDeUsuario(Long usuarioId, LocalDate fechaInicio, LocalDate fechaFin) {
 
        Usuario usuario = usuarioRepository.findById(usuarioId)
-               .orElseThrow(()-> new RuntimeException("No se encontro al usuario con id : "+ usuarioId));
+               .orElseThrow(()-> new ResourceNotFoundException("No se encontro al usuario con id : "+ usuarioId));
        if (!usuario.isActivo()){
-           throw new RuntimeException("El usuario no puede realozar esta accion");
+           throw new BadRequestException("El usuario no puede realozar esta accion");
        }
 
         List<Transaccion> transacciones;
@@ -90,19 +93,19 @@ public class TransaccionService {
     @Transactional
     public void eliminarTransaccion(Long usuarioId, Long transaccionId) {
         Transaccion transaccion = transaccionRepository.findById(transaccionId)
-                .orElseThrow(() -> new RuntimeException("Transaccion no encontrada con ID: " + transaccionId));
+                .orElseThrow(() -> new ResourceNotFoundException("Transaccion no encontrada con ID: " + transaccionId));
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No se encontro al usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro al usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("No puede realizar esta accion");
+            throw new BadRequestException("No puede realizar esta accion");
         }
 
         if (!transaccion.getUsuario().getId().equals(usuario.getId())){
-            throw new RuntimeException("Acceso denegado: No puedes eliminar esta transaccion");
+            throw new ForbiddenActionException("Acceso denegado: No puedes eliminar esta transaccion");
         }
         if (pagoRepository.existsByTransaccionId(transaccionId)){
-            throw new RuntimeException("No se puede eliminar esta transaccio. Es un registro contable de un pago ya realizado");
+            throw new BadRequestException("No se puede eliminar esta transaccio. Es un registro contable de un pago ya realizado");
         }
         transaccionRepository.delete(transaccion);
     }
@@ -111,17 +114,17 @@ public class TransaccionService {
     @Transactional
     public TransaccionResponseDto actualizarTransaccion(Long usuarioId ,Long transaccionId, TransaccionRequestActualizarDto requestActualizarDto) {
         Transaccion actTransaccion = transaccionRepository.findById(transaccionId)
-                .orElseThrow(() -> new RuntimeException("Transaccion no encontrada con ID: " + transaccionId));
+                .orElseThrow(() -> new ResourceNotFoundException("Transaccion no encontrada con ID: " + transaccionId));
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No se encontro al usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro al usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("No puede realizar esta accion");
+            throw new BadRequestException("No puede realizar esta accion");
         }
 
         if (!actTransaccion.getUsuario().getId().equals(usuario.getId())){
-            throw new RuntimeException("Acceso denegado: No puedes modificar esta transaccion");
+            throw new ForbiddenActionException("Acceso denegado: No puedes modificar esta transaccion");
         }
         boolean cambios = false;
 
@@ -161,7 +164,7 @@ public class TransaccionService {
     @Transactional(readOnly = true)
     public BalanceDiarioDto balanceDiario(Long id, LocalDate fecha){
         Usuario usuario = usuarioRepository.findById(id).
-                orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+                orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + id));
 
         LocalDate fechaCons = (fecha != null) ? fecha : LocalDate.now();
 

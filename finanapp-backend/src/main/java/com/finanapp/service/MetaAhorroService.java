@@ -3,6 +3,9 @@ package com.finanapp.service;
 import com.finanapp.dto.MetaAhorroRequestActualizarDto;
 import com.finanapp.dto.MetaAhorroRequestDto;
 import com.finanapp.dto.MetaAhorroResponseDto;
+import com.finanapp.exception.BadRequestException;
+import com.finanapp.exception.ForbiddenActionException;
+import com.finanapp.exception.ResourceNotFoundException;
 import com.finanapp.model.EstadoMeta;
 import com.finanapp.model.MetasAhorro;
 import com.finanapp.model.Usuario;
@@ -28,10 +31,10 @@ public class MetaAhorroService {
     @Transactional
     public MetaAhorroResponseDto crearMeta(Long usuarioId, MetaAhorroRequestDto requestDto) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con id: " + usuarioId));
 
         if (!usuario.isActivo()) {
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
 
@@ -53,10 +56,10 @@ public class MetaAhorroService {
     @Transactional(readOnly = true)
     public List<MetaAhorroResponseDto> obtenerMetasPorUsuarioId(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con id: " + usuarioId));
 
         if (!usuario.isActivo()) {
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         List<MetasAhorro> metasUsuario = metaRepository.findByUsuarioId(usuarioId);
@@ -70,10 +73,10 @@ public class MetaAhorroService {
     public List<MetaAhorroResponseDto> obtenerMetasPorIdyEstado(Long usuarioId, EstadoMeta estadoMeta) {
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con id: " + usuarioId));
 
         if (!usuario.isActivo()) {
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         List<MetasAhorro> metasusuario = metaRepository.findByUsuarioIdAndEstado(usuarioId, estadoMeta);
@@ -87,10 +90,10 @@ public class MetaAhorroService {
     public BigDecimal totalAhorrado(Long usuarioId, EstadoMeta estadoMeta) {
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con id: " + usuarioId));
 
         if (!usuario.isActivo()) {
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         BigDecimal total = metaRepository.sumarTotalAhorradoPorUsuario(usuarioId, estadoMeta);
@@ -102,17 +105,17 @@ public class MetaAhorroService {
     @Transactional
     public void eliminarMeta ( Long usuarioId ,Long metaId){
         MetasAhorro meta = metaRepository.findById(metaId)
-                .orElseThrow(()-> new RuntimeException("No se encontro la meta con id: " + metaId));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro la meta con id: " + metaId));
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con id: " + usuarioId));
 
         if (!usuario.isActivo()) {
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         if (!meta.getUsuario().getId().equals(usuario.getId())){
-            throw new RuntimeException("No puedes eliminar esta categoria");
+            throw new ForbiddenActionException("No puedes eliminar esta meta");
         }
 
         meta.setEstado(EstadoMeta.CANCELADA);
@@ -124,16 +127,16 @@ public class MetaAhorroService {
     public MetaAhorroResponseDto actualizarMeta(Long usuarioId ,Long metaId, MetaAhorroRequestActualizarDto requestDto){
 
         MetasAhorro meta= metaRepository.findById(metaId)
-                .orElseThrow(()-> new RuntimeException("No existe el ahorro o meta con id: " + metaId));
+                .orElseThrow(()-> new ResourceNotFoundException("No existe el ahorro o meta con id: " + metaId));
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con id: " + usuarioId));
 
         if (!usuario.isActivo()) {
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         if (!meta.getUsuario().getId().equals(usuario.getId())){
-            throw new RuntimeException("No puedes modificar esta categoria");
+            throw new ForbiddenActionException("No puedes modificar esta meta");
         }
 
         boolean cambios = false;
@@ -162,7 +165,7 @@ public class MetaAhorroService {
         }
 
         if (!cambios){
-            throw  new RuntimeException("No hay campos para modificar");
+            throw  new BadRequestException("No hay campos para modificar");
         }
 
         return MetaAhorroResponseDto.fromEntity(meta);

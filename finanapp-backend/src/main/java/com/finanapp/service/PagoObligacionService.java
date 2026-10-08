@@ -2,6 +2,9 @@ package com.finanapp.service;
 
 import com.finanapp.dto.PagoObligacionRequestDto;
 import com.finanapp.dto.PagoObligacionResponseDto;
+import com.finanapp.exception.BadRequestException;
+import com.finanapp.exception.ForbiddenActionException;
+import com.finanapp.exception.ResourceNotFoundException;
 import com.finanapp.model.*;
 import com.finanapp.repository.*;
 import lombok.AllArgsConstructor;
@@ -25,23 +28,26 @@ public class PagoObligacionService {
     @Transactional
     public PagoObligacionResponseDto crearPago (Long usuarioId, PagoObligacionRequestDto requestDto){
         ObligacionRecurrente obligacion = obligacionRecurrenteRepository.findById(requestDto.obligacionId())
-                .orElseThrow(() -> new RuntimeException("No se encontro obligacion con el id: "+ requestDto.obligacionId()));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro obligacion con el id: "+ requestDto.obligacionId()));
 
         Usuario usuario= usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No se encontro al usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro al usuario con Id: " + usuarioId));
 
         Categoria categoria= categoriaRepository.findById(requestDto.categoriaId())
-                .orElseThrow(()->new RuntimeException("Categoria no encontrada con id: " + requestDto.categoriaId()));
+                .orElseThrow(()->new ResourceNotFoundException("Categoria no encontrada con id: " + requestDto.categoriaId()));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
         if (!obligacion.isActiva()) {
-            throw new RuntimeException("La obligación se encuentra inactiva");
+            throw new BadRequestException("La obligación se encuentra inactiva");
+        }
+        if (!obligacion.getUsuario().getId().equals(usuario.getId())) {
+            throw new ForbiddenActionException("Acceso denegado");
         }
 
         if (  categoria.getUsuario() != null && !categoria.getUsuario().getId().equals(usuario.getId()) ){
-            throw new RuntimeException("No se puede acceder a esta categoria o no existe");
+            throw new ForbiddenActionException("No se puede acceder a esta categoria o no existe");
         }
         LocalDate fechaPago= (requestDto.fechaPago() != null) ? requestDto.fechaPago() : LocalDate.now() ;
 
@@ -66,7 +72,7 @@ public class PagoObligacionService {
 
 
         if (pago.getMontoPagado().compareTo(obligacion.getSaldoPendiente()) > 0){
-            throw new RuntimeException("No se puede realizar un pago mayor a lo restante");
+            throw new BadRequestException("No se puede realizar un pago mayor a lo restante");
         }
 
         BigDecimal nuevoSaldo = obligacion.getSaldoPendiente().subtract(requestDto.montoPagado());
@@ -92,18 +98,18 @@ public class PagoObligacionService {
     @Transactional(readOnly = true)
     public List<PagoObligacionResponseDto> obtenerHistorialPagosPorObligacion(Long usuarioId, Long obligacionId){
         ObligacionRecurrente obligacion = obligacionRecurrenteRepository.findById(obligacionId)
-                .orElseThrow(() -> new RuntimeException("No se encontro obligacion con el id: " + obligacionId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro obligacion con el id: " + obligacionId));
 
 
         Usuario usuario= usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No se encontro al usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro al usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realoizar esta accion");
+            throw new BadRequestException("El usuario no puede realoizar esta accion");
         }
 
         if (!obligacion.getUsuario().getId().equals(usuario.getId())) {
-            throw new RuntimeException("Acceso denegado");
+            throw new ForbiddenActionException("Acceso denegado");
         }
         List<PagoObligacion> pagos = pagoObligacionRepository.findByObligacionId(obligacionId);
 

@@ -3,6 +3,9 @@ package com.finanapp.service;
 import com.finanapp.dto.ObligacionRecurrenteRequestActualizarDto;
 import com.finanapp.dto.ObligacionRecurrenteRequestDto;
 import com.finanapp.dto.ObligacionRecurrenteResponseDto;
+import com.finanapp.exception.BadRequestException;
+import com.finanapp.exception.ForbiddenActionException;
+import com.finanapp.exception.ResourceNotFoundException;
 import com.finanapp.model.EstadoObligacion;
 import com.finanapp.model.ObligacionRecurrente;
 import com.finanapp.model.Usuario;
@@ -28,10 +31,10 @@ public class ObligacionRecurrenteService {
     @Transactional
     public ObligacionRecurrenteResponseDto crearObligacion(Long usuarioId,ObligacionRecurrenteRequestDto requestObligacion){
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No existe el  usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         ObligacionRecurrente nuevaObligacion = ObligacionRecurrente.builder()
@@ -41,7 +44,7 @@ public class ObligacionRecurrenteService {
                 .saldoPendiente(requestObligacion.monto())
                 .frecuencia(requestObligacion.frecuencia())
                 .estado(EstadoObligacion.PENDIENTE)
-                .diaLimitePago(requestObligacion.fechaLimitePago())
+                .diaLimitePago(requestObligacion.diaLimitePago())
                 .proximoVencimiento(requestObligacion.proximoVencimiento())
                 .activa(true)
                 .build();
@@ -54,10 +57,10 @@ public class ObligacionRecurrenteService {
     @Transactional
     public List<ObligacionRecurrenteResponseDto> obtenerObligaciones(Long usuarioId){
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No existe el  usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
 
@@ -73,10 +76,10 @@ public class ObligacionRecurrenteService {
     @Transactional (readOnly = true)
     public List<ObligacionRecurrenteResponseDto> obtenerObligacionesActivas(Long usuarioId){
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No existe el  usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         List<ObligacionRecurrente> obligacionesActivasUsuario = obligacionRepository.
@@ -90,15 +93,15 @@ public class ObligacionRecurrenteService {
     @Transactional
     public void desactivarObligacion (Long usuarioId , Long obligacionId){
         ObligacionRecurrente obligacion = obligacionRepository.findById(obligacionId)
-                .orElseThrow(()-> new RuntimeException("No se encontro la obligacion con id: " +obligacionId));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro la obligacion con id: " +obligacionId));
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No existe el  usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
         if (!obligacion.getUsuario().getId().equals(usuario.getId())){
-            throw new RuntimeException("Acceso denegado: No puedes eliminar esta obligacion");
+            throw new ForbiddenActionException(" No puedes eliminar esta obligacion");
         }
 
         obligacion.setActiva(false);
@@ -109,17 +112,17 @@ public class ObligacionRecurrenteService {
     @Transactional
     public ObligacionRecurrenteResponseDto actualizarObligacion(Long usuarioId, Long obligacionId, ObligacionRecurrenteRequestActualizarDto actualizarDto){
         ObligacionRecurrente obligacion = obligacionRepository.findById(obligacionId)
-                .orElseThrow(()-> new RuntimeException("No se encontro la obligacion con id: " +obligacionId));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro la obligacion con id: " +obligacionId));
 
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No existe el  usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
         if (!obligacion.getUsuario().getId().equals(usuario.getId())){
-            throw new RuntimeException("Acceso denegado: No puedes modificar esta obligacion");
+            throw new ForbiddenActionException("Acceso denegado: No puedes modificar esta obligacion");
         }
         boolean cambios = false;
 
@@ -162,10 +165,10 @@ public class ObligacionRecurrenteService {
     @Transactional
     public List<ObligacionRecurrenteResponseDto> obtenerObligacionesUsuarioYEstado(Long usuarioId, EstadoObligacion estado){
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No existe el  usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         List<ObligacionRecurrente> obligaciones = obligacionRepository.findByUsuarioIdAndEstado(usuarioId, estado);
@@ -180,10 +183,10 @@ public class ObligacionRecurrenteService {
     @Transactional (readOnly = true)
     public BigDecimal obtenerCuotaDiariaSeguridad(Long usuarioId){
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(()-> new RuntimeException("No existe el  usuario con Id: " + usuarioId));
+                .orElseThrow(()-> new ResourceNotFoundException("No existe el  usuario con Id: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         BigDecimal cuotaSeguridad = obligacionRepository.calcularCuotaDiariaDeSeguridad(usuarioId);

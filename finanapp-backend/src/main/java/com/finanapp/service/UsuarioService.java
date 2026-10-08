@@ -3,6 +3,9 @@ package com.finanapp.service;
 import com.finanapp.dto.UsuarioRequestActualizarDto;
 import com.finanapp.dto.UsuarioRequestDto;
 import com.finanapp.dto.UsuarioResponseDto;
+import com.finanapp.exception.BadRequestException;
+import com.finanapp.exception.DuplicateResourceException;
+import com.finanapp.exception.ResourceNotFoundException;
 import com.finanapp.model.Usuario;
 import com.finanapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +26,10 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponseDto crearUsuario(UsuarioRequestDto usuarioRequestDto){
         if (usuarioRepository.existsByTelefono(usuarioRequestDto.telefono())) {
-            throw new RuntimeException("El teléfono ya está registrado.");
+            throw new DuplicateResourceException("El teléfono ya está registrado.");
         }
         if (usuarioRepository.existsByEmail(usuarioRequestDto.email())) {
-            throw new RuntimeException("El email ya está registrado.");
+            throw new DuplicateResourceException("El email ya está registrado.");
         }
         Usuario nuevoUsuario = Usuario.builder()
                 .nombre(usuarioRequestDto.nombre()).
@@ -48,7 +51,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public UsuarioResponseDto obtenerPorId(Long id){
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Usuario no encontrado con Id" + id));
+                .orElseThrow(()-> new ResourceNotFoundException("Usuario no encontrado con Id" + id));
         return UsuarioResponseDto.fromEntity(usuario);
     }
 
@@ -57,7 +60,7 @@ public class UsuarioService {
     @Transactional
     public void desactivarUsuario(Long id){
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Usuario no encontrado con Id" + id));
+                .orElseThrow(()-> new ResourceNotFoundException("Usuario no encontrado con Id" + id));
 
         usuario.setActivo(false);
         usuarioRepository.save(usuario);
@@ -69,7 +72,7 @@ public class UsuarioService {
     @Transactional
     public UsuarioResponseDto actualizarUsuario(Long id, UsuarioRequestActualizarDto actualizarRequest){
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Usuario no encontrado con Id" + id));
+                .orElseThrow(()-> new ResourceNotFoundException("Usuario no encontrado con Id" + id));
 
         boolean cambios = false;
         if (actualizarRequest.nombre()!= null && !actualizarRequest.nombre().isBlank()){
@@ -81,7 +84,7 @@ public class UsuarioService {
             cambios = true;
         }
         if (!cambios){
-            throw new RuntimeException("Campos vacios, no se puede actualizar");
+            throw new BadRequestException("Campos vacios, no se puede actualizar");
         }
 
         usuarioRepository.save(usuario);

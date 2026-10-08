@@ -3,6 +3,9 @@ package com.finanapp.service;
 import com.finanapp.dto.CategoriaRequestActualizarDto;
 import com.finanapp.dto.CategoriaRequestDto;
 import com.finanapp.dto.CategoriaResponseDto;
+import com.finanapp.exception.BadRequestException;
+import com.finanapp.exception.ForbiddenActionException;
+import com.finanapp.exception.ResourceNotFoundException;
 import com.finanapp.model.Categoria;
 import com.finanapp.model.TipoTransaccion;
 import com.finanapp.model.Usuario;
@@ -26,10 +29,10 @@ public class CategoriaService {
     @Transactional
     public CategoriaResponseDto crearCategoria(Long usuarioId, CategoriaRequestDto categoriaRequestDto){
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con ID: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con ID: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         Categoria categoria = Categoria.builder()
@@ -64,14 +67,14 @@ public class CategoriaService {
     public void eliminarCategoria(Long idCategoria, Long idUsuario){
 
         Categoria categoria = categoriaRepository.findById(idCategoria)
-                .orElseThrow(()-> new RuntimeException("No se encontro categoria con el ID: " + idCategoria));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro categoria con el ID: " + idCategoria));
 
         if (categoria.getUsuario() == null){
-            throw new RuntimeException("El usuario no puede eliminar categorias globales");
+            throw new ForbiddenActionException("El usuario no puede eliminar categorias globales");
         }
 
         if (!categoria.getUsuario().getId().equals(idUsuario)){
-            throw new RuntimeException("No puedes eliminar esta categoria");
+            throw new ForbiddenActionException("No puedes eliminar esta categoria");
         }
 
 
@@ -83,21 +86,21 @@ public class CategoriaService {
     @Transactional
     public CategoriaResponseDto actualizarCategoria(Long usuarioId,Long id, CategoriaRequestActualizarDto actualizarDto){
         Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("No se encontro categoria con el ID: " + id));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro categoria con el ID: " + id));
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con ID: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con ID: " + usuarioId));
 
         if (!usuario.isActivo()){
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         if (categoria.getUsuario() == null) {
-            throw new RuntimeException("No se pueden modificar las categorías base del sistema.");
+            throw new ForbiddenActionException("No se pueden modificar las categorías base del sistema.");
         }
 
         if (!categoria.getUsuario().getId().equals(usuarioId)){
-            throw new RuntimeException("No puedes actualizar esta categoria");
+            throw new ForbiddenActionException("No puedes actualizar esta categoria");
         }
         boolean cambios = false;
 
@@ -117,7 +120,7 @@ public class CategoriaService {
         }
 
         if (!cambios){
-            throw new RuntimeException("No se han enviado campos validos para actualizar");
+            throw new BadRequestException("No se han enviado campos validos para actualizar");
         }
         Categoria categoriaActualizada = categoriaRepository.save(categoria);
         return CategoriaResponseDto.fromEntity(categoriaActualizada);

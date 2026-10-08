@@ -4,6 +4,9 @@ import com.finanapp.dto.AporteAhorroRequestDto;
 import com.finanapp.dto.AporteAhorroResponseDto;
 import com.finanapp.dto.MetaAhorroResponseDto;
 import com.finanapp.dto.RetiroAhorroRequestDto;
+import com.finanapp.exception.BadRequestException;
+import com.finanapp.exception.ForbiddenActionException;
+import com.finanapp.exception.ResourceNotFoundException;
 import com.finanapp.model.*;
 import com.finanapp.repository.*;
 import lombok.AllArgsConstructor;
@@ -28,30 +31,30 @@ public class AporteAhorroService {
     @Transactional
     public AporteAhorroResponseDto crearAporte(Long usuarioId, AporteAhorroRequestDto requestDto) {
         MetasAhorro meta = metaRepository.findById(requestDto.metaId())
-                .orElseThrow(()-> new RuntimeException("No se encontro el ahorro o cajita con id: " + requestDto.metaId()));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro el ahorro o cajita con id: " + requestDto.metaId()));
 
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con id: " + usuarioId));
 
         Categoria categoria = categoriaRepository.findById(requestDto.categoriaId())
-                .orElseThrow(()-> new RuntimeException("No se encontro categoria con id: " + requestDto.categoriaId()));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro categoria con id: " + requestDto.categoriaId()));
 
 
         if (!usuario.isActivo()) {
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         if (meta.getEstado() == EstadoMeta.CANCELADA){
-            throw new RuntimeException("No se le puede abonar a este ahorro");
+            throw new BadRequestException("No se le puede abonar a este ahorro");
         }
 
         if (!usuario.getId().equals(meta.getUsuario().getId())){
-            throw new RuntimeException("No puedes realizar esta accion");
+            throw new ForbiddenActionException("No puedes realizar esta accion");
         }
 
         if (categoria.getUsuario() != null && !categoria.getUsuario().getId().equals(usuario.getId()) ){
-            throw new RuntimeException("No se puede acceder a esta categoria o no existe");
+            throw new ForbiddenActionException("No se puede acceder a esta categoria o no existe");
         }
 
         LocalDate fecha = (requestDto.fecha()!= null)? requestDto.fecha() : LocalDate.now();
@@ -94,33 +97,33 @@ public class AporteAhorroService {
     @Transactional
     public MetaAhorroResponseDto retirarDinero (Long usuarioId, RetiroAhorroRequestDto requestDto){
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con id: " + usuarioId));
 
         MetasAhorro meta = metaRepository.findById(requestDto.metaId())
-                .orElseThrow(()-> new RuntimeException("No se encontro el ahorro o cajita con id: " + requestDto.metaId()));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro el ahorro o cajita con id: " + requestDto.metaId()));
 
         Categoria categoria = categoriaRepository.findById(requestDto.categoriaId())
-                .orElseThrow(()-> new RuntimeException("No se encontro categoria con id: " + requestDto.categoriaId()));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro categoria con id: " + requestDto.categoriaId()));
 
         if (!usuario.isActivo()) {
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         if (meta.getEstado() == EstadoMeta.CANCELADA){
-            throw new RuntimeException("No se puede retirar de un ahorro cancelado");
+            throw new BadRequestException("No se puede retirar de un ahorro cancelado");
         }
         if (!usuario.getId().equals(meta.getUsuario().getId())){
-            throw new RuntimeException("No puedes realizar esta accion");
+            throw new ForbiddenActionException("No puedes realizar esta accion");
         }
 
         if (  categoria.getUsuario() != null && !categoria.getUsuario().getId().equals(usuario.getId()) ){
-            throw new RuntimeException("No se puede acceder a esta categoria o no existe");
+            throw new ForbiddenActionException("No se puede acceder a esta categoria o no existe");
         }
 
         BigDecimal acumuladoActual = meta.getMontoAcumulado() != null ? meta.getMontoAcumulado() : BigDecimal.ZERO;
 
         if (requestDto.montoRetiro().compareTo(acumuladoActual)>0){
-            throw new RuntimeException("Saldo insuficiente");
+            throw new BadRequestException("Saldo insuficiente");
         }
 
         LocalDate fecha = (requestDto.fecha() != null) ? requestDto.fecha() : LocalDate.now();
@@ -153,17 +156,17 @@ public class AporteAhorroService {
     @Transactional(readOnly = true)
     public List<AporteAhorroResponseDto> obtenerHistorial(Long usuarioId ,Long metaId){
         MetasAhorro meta= metaRepository.findById(metaId)
-                .orElseThrow(()-> new RuntimeException("No se encontro la meta con id: " + metaId));
+                .orElseThrow(()-> new ResourceNotFoundException("No se encontro la meta con id: " + metaId));
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("No se encontro al usuario con id: " + usuarioId));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontro al usuario con id: " + usuarioId));
 
         if (!usuario.isActivo()) {
-            throw new RuntimeException("El usuario no puede realizar esta accion");
+            throw new BadRequestException("El usuario no puede realizar esta accion");
         }
 
         if (!meta.getUsuario().getId().equals(usuario.getId())){
-            throw new RuntimeException("No puedes obtener el historial de esta meta");
+            throw new ForbiddenActionException("No puedes obtener el historial de esta meta");
         }
 
         List<AporteAhorro> historialAportes = aporteRepository.findByMetaIdOrderByFechaDesc(metaId);

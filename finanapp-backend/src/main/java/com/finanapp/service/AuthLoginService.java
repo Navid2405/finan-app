@@ -3,11 +3,13 @@ package com.finanapp.service;
 import com.finanapp.dto.AuthLoginRequestDto;
 import com.finanapp.dto.AuthLoginResponseDto;
 import com.finanapp.dto.UsuarioResponseDto;
+import com.finanapp.exception.ResourceNotFoundException;
 import com.finanapp.model.Usuario;
 import com.finanapp.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -31,10 +33,10 @@ public class AuthLoginService {
     private long expiracionEnSegundos;
     public AuthLoginResponseDto login (AuthLoginRequestDto requestDto){
         Usuario usuario = usuarioRepository.findByEmail(requestDto.email())
-                .orElseThrow(()-> new RuntimeException("El email no existe"));
+                .orElseThrow(()-> new BadCredentialsException("El email no existe"));
 
         if (!usuario.isActivo() || !passwordEncoder.matches(requestDto.password(), usuario.getPasswordHash())){
-            throw new RuntimeException("Credencial invalida");
+            throw new BadCredentialsException("Credencial invalida");
         }
 
 
