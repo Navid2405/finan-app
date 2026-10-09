@@ -15,8 +15,8 @@ Las aplicaciones bancarias tradicionales asumen nóminas fijas mensuales, dejand
 ---
 
 ## Stack Tecnológico
-* **Lenguaje:** Java 21 (LTS)
-* **Framework:** Spring Boot 3.x
+* **Lenguaje:** Java  17
+* **Framework:** Spring Boot 4.1
 * **Persistencia:** Spring Data JPA / Hibernate
 * **Base de Datos:** PostgreSQL
 * **Documentación de API:** Springdoc OpenAPI (Swagger UI)
