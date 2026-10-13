@@ -126,6 +126,9 @@ public class TransaccionService {
         if (!actTransaccion.getUsuario().getId().equals(usuario.getId())){
             throw new ForbiddenActionException("Acceso denegado: No puedes modificar esta transaccion");
         }
+        if (pagoRepository.existsByTransaccionId(transaccionId)){
+            throw new BadRequestException("No se puede actualizar esta transaccio. Es un registro contable de un pago ya realizado");
+        }
         boolean cambios = false;
 
         if (requestActualizarDto.tipoTransaccion() != null) {
