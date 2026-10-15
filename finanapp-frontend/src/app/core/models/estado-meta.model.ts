@@ -1,0 +1,5 @@
+export enum EstadoMetaModel{
+  COMPLETADA= 'COMPLETADA',
+  EN_PROGRESO = 'EN_PROGRESO',
+  CANCELADA = 'CANCELADA'
+}
