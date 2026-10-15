@@ -1,28 +1,28 @@
-<div >
-  <div>
+<div class="min-h-screen bg-[#0B0F19] text-[#F8FAFC] flex items-center justify-center p-4">
+  <div class="w-full max-w-md bg-[#151C2C] border border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl">
 
     <!-- Encabezado / Logo -->
-    <div>
-      <div>
-        logo
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#10B981]/15 text-[#10B981] font-extrabold text-2xl border border-[#10B981]/30 mb-3 shadow-lg shadow-emerald-500/10" >
+        $
       </div>
-      <h1>Bienvenido a FinanApp</h1>
-      <p >Ingresa tus credenciales para acceder a tus finanzas</p>
+      <h1  class="text-2xl font-bold tracking-tight text-white">Bienvenido a FinanApp</h1>
+      <p class="text-xs sm:text-sm text-[#94A3B8] mt-1">Ingresa tus credenciales para acceder a tus finanzas</p>
     </div>
 
     <!-- Alerta de Error -->
     @if (errorMensaje()) {
-      <div>
-        <span>⚠️</span>
+      <div  class="mb-5 p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-[#EF4444] text-xs sm:text-sm flex items-center gap-2.5">
+        <span class="text-base">⚠️</span>
         <span>{{ errorMensaje() }}</span>
       </div>
     }
 
     <!-- Formulario -->
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" >
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
 
       <div>
-        <label for="email">
+        <label for="email" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
           Correo Electrónico
         </label>
         <input
@@ -30,17 +30,18 @@
           type="email"
           formControlName="email"
           placeholder="ejemplo@correo.com"
+          class="w-full px-4 py-3.5 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition"
           [class.border-red-500]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid"
         />
         @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
-          <span>
+          <span class="text-xs text-[#EF4444] mt-1 ml-1 block">
             Ingresa un correo electrónico válido.
           </span>
         }
       </div>
 
       <div>
-        <label for="password" >
+        <label for="password" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
           Contraseña
         </label>
         <input
@@ -48,10 +49,11 @@
           type="password"
           formControlName="password"
           placeholder="••••••••"
+          class="w-full px-4 py-3.5 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition"
           [class.border-red-500]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
         />
         @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
-          <span>
+          <span class="text-xs text-[#EF4444] mt-1 ml-1 block">
             La contraseña es obligatoria.
           </span>
         }
@@ -59,8 +61,11 @@
 
       <button
         type="submit"
-        [disabled]="cargando()">
+        [disabled]="cargando()"
+        class="w-full py-4 px-4 mt-2 bg-[#10B981] hover:bg-emerald-600 active:scale-[0.98] text-white font-bold text-base rounded-2xl shadow-lg shadow-emerald-500/20 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+      >
         @if (cargando()) {
+          <span class="inline-block animate-spin mr-1">⏳</span>
           <span>Ingresando...</span>
         } @else {
           <span>Iniciar Sesión</span>
@@ -68,9 +73,9 @@
       </button>
     </form>
 
-    <div>
+    <div class="mt-6 text-center text-xs sm:text-sm text-[#94A3B8]">
       ¿No tienes una cuenta aún?
-      <a routerLink="/auth/registro">
+      <a routerLink="/auth/registro" class="font-bold text-[#10B981] hover:text-emerald-300 underline ml-1">
         Regístrate aquí
       </a>
     </div>
