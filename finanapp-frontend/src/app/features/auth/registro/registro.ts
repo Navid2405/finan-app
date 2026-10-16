@@ -89,7 +89,7 @@ onSubmit(): void {
           }else if(err.status ===0){
             this.errorMensaje.set('No se pudo conectar con el servidor');
           }else{
-            this.errorMensaje.set('Ocurrio un error inesperado al registrarse');
+            this.errorMensaje.set(err.error?.mensaje || 'Ocurrio un error inesperado al registrarse');
           }
         }
       }
