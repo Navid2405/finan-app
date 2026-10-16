@@ -1,0 +1,31 @@
+<div class="min-h-screen bg-[#0B0F19] text-slate-100 flex flex-col justify-between">
+  <main class="w-full max-w-md mx-auto flex-1 px-4 pt-4 pb-28">
+    <router-outlet />
+  </main>
+
+  <!-- Bottom Bar Fija siempre en la parte inferior -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#151C2C]/90 backdrop-blur-lg border-t border-slate-800/80">
+    <div class="max-w-md mx-auto flex items-center justify-around py-3 px-2">
+
+      <!--Inicio -->
+      <a routerLink="/dashboard" routerLinkActive="text-emerald-400 scale-105" [routerLinkActiveOptions]="{exact: true}" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      </a>
+
+      <!-- Transacciones -->
+      <a routerLink="/transacciones" routerLinkActive="text-emerald-400 scale-105" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+      </a>
+
+      <!-- Obligaciones -->
+      <a routerLink="/obligaciones" routerLinkActive="text-emerald-400 scale-105" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+      </a>
+
+      <!--Perfil -->
+      <a routerLink="/perfil" routerLinkActive="text-emerald-400 scale-105" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+      </a>
+    </div>
+  </nav>
+</div>
