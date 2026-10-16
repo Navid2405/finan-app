@@ -1,0 +1,128 @@
+@if (layoutService.sidebarAbierto()) {
+  <div
+    class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 transition-opacity"
+    (click)="layoutService.cerrar()"
+  ></div>
+
+  <!-- Barra lateral deslizante -->
+  <aside class="fixed top-0 bottom-0 left-0 w-72 p-6 pb-24 max-w-[85vw] bg-[#151C2C] border-r border-slate-800 z-50 p-6 flex flex-col justify-between shadow-2xl animate-in slide-in-from-left duration-200">
+
+    <!-- Header del Sidebar y Perfil -->
+    <div>
+      <div class="flex items-center justify-between pb-6 border-b border-slate-800/80">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#10B981]/15 text-[#10B981] font-extrabold text-xl flex items-center justify-center border border-[#10B981]/30">
+            $
+          </div>
+          <div>
+            <h2 class="font-bold text-white text-base">FinanApp</h2>
+            <span class="text-[10px] uppercase tracking-wider text-[#94A3B8] font-semibold">Menu Principal</span>
+          </div>
+        </div>
+
+        <!-- Boton cerrar sidebar -->
+        <button
+          (click)="layoutService.cerrar()"
+          class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/60 transition"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Tarjeta de usuario -->
+      <div class="mt-5 p-3 rounded-2xl bg-[#0B0F19] border border-slate-800/80 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-[#10B981] flex items-center justify-center font-bold text-sm">
+          👤
+        </div>
+        <div class="overflow-hidden">
+          <h4 class="font-bold text-white text-sm truncate">{{ nombreUsuario() }}</h4>
+          <span class="text-[11px] text-emerald-400 font-medium block">Sesion Activa</span>
+        </div>
+      </div>
+
+      <!-- Menu de enlaces -->
+      <nav class="mt-6 space-y-1.5">
+
+        <!-- Dashboard -->
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="bg-[#10B981]/15 text-[#10B981] border-l-4 border-[#10B981]"
+          [routerLinkActiveOptions]="{exact: true}"
+          (click)="navegarYCerrar()"
+          class="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-[#94A3B8] hover:bg-slate-800 hover:text-white transition"
+        >
+          <span>🏠</span>
+          <span>Inicio / Balance</span>
+        </a>
+
+        <!-- Transacciones -->
+        <a
+          routerLink="/transacciones"
+          routerLinkActive="bg-[#10B981]/15 text-[#10B981] border-l-4 border-[#10B981]"
+          (click)="navegarYCerrar()"
+          class="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-[#94A3B8] hover:bg-slate-800 hover:text-white transition"
+        >
+          <span>📋</span>
+          <span>Movimientos</span>
+        </a>
+
+        <!-- Obligaciones -->
+        <a
+          routerLink="/obligaciones"
+          routerLinkActive="bg-[#10B981]/15 text-[#10B981] border-l-4 border-[#10B981]"
+          (click)="navegarYCerrar()"
+          class="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-[#94A3B8] hover:bg-slate-800 hover:text-white transition"
+        >
+          <span>💳</span>
+          <span> Deudas</span>
+        </a>
+
+        <!--Metas de ahorro -->
+        <a
+          routerLink="/ahorros"
+          routerLinkActive="bg-[#10B981]/15 text-[#10B981] border-l-4 border-[#10B981]"
+          (click)="navegarYCerrar()"
+          class="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-[#94A3B8] hover:bg-slate-800 hover:text-white transition"
+        >
+          <span>🎯</span>
+          <span>Metas de Ahorro</span>
+        </a>
+
+        <!--Categorías  -->
+        <a
+          routerLink="/categorias"
+          routerLinkActive="bg-[#10B981]/15 text-[#10B981] border-l-4 border-[#10B981]"
+          (click)="navegarYCerrar()"
+          class="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-[#94A3B8] hover:bg-slate-800 hover:text-white transition"
+        >
+          <span>🏷️</span>
+          <span>Categorías</span>
+        </a>
+
+        <!-- 6. Perfil -->
+        <a
+          routerLink="/perfil"
+          routerLinkActive="bg-[#10B981]/15 text-[#10B981] border-l-4 border-[#10B981]"
+          (click)="navegarYCerrar()"
+          class="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-[#94A3B8] hover:bg-slate-800 hover:text-white transition"
+        >
+          <span>⚙️</span>
+          <span>Mi Perfil</span>
+        </a>
+
+      </nav>
+    </div>
+
+    <!-- Parte Inferior: Botón Cerrar Sesión -->
+    <div class="pt-4 border-t border-slate-800/80">
+      <button
+        (click)="cerrarSesion()"
+        class="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold text-[#EF4444] hover:bg-red-500/10 active:scale-95 transition"
+      >
+        <span>🚪</span>
+        <span>Cerrar Sesion</span>
+      </button>
+    </div>
+
+  </aside>
+}
