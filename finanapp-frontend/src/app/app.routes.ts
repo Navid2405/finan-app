@@ -28,6 +28,11 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard').then((m) => m.Dashboard)
+      },
+      {
+        path:'categorias',
+        loadComponent:()=>
+          import('./features/categorias/categorias').then((m)=> m.Categorias)
       }
     ]
   }
