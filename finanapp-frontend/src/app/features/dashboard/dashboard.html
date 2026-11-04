@@ -19,11 +19,11 @@
 
   <!-- Acciones de ingreso y gasto -->
   <div class="grid grid-cols-2 gap-4">
-    <button class="flex items-center justify-center gap-2 py-4 px-4 bg-[#10B981] hover:bg-emerald-600 active:scale-95 text-white font-bold text-base sm:text-lg rounded-2xl shadow-lg shadow-emerald-500/20 transition">
+    <button (click)="irACrear('INGRESO')" class="flex items-center justify-center gap-2 py-4 px-4 bg-[#10B981] hover:bg-emerald-600 active:scale-95 text-white font-bold text-base sm:text-lg rounded-2xl shadow-lg shadow-emerald-500/20 transition cursor-pointer">
       <span class="text-2xl leading-none">+</span> Ingreso
     </button>
 
-    <button class="flex items-center justify-center gap-2 py-4 px-4 bg-[#EF4444] hover:bg-red-600 active:scale-95 text-white font-bold text-base sm:text-lg rounded-2xl shadow-lg shadow-red-500/20 transition">
+    <button (click)="irACrear('GASTO')" class="flex items-center justify-center gap-2 py-4 px-4 bg-[#EF4444] hover:bg-red-600 active:scale-95 text-white font-bold text-base sm:text-lg rounded-2xl shadow-lg shadow-red-500/20 transition cursor-pointer">
       <span class="text-2xl leading-none">-</span> Gasto
     </button>
   </div>
