@@ -48,6 +48,11 @@ export const routes: Routes = [
         path: 'categorias',
         loadComponent: () =>
           import('./features/categorias/categorias').then((m) => m.Categorias)
+      },
+      {
+        path: 'notificaciones',
+        loadComponent: () =>
+          import('./features/notificaciones/notificaciones').then((m) => m.NotificacionesComponent)
       }
     ]
   }

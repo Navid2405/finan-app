@@ -99,6 +99,24 @@
           <span>Categorías</span>
         </a>
 
+        <!-- Notificaciones -->
+        <a
+          routerLink="/notificaciones"
+          routerLinkActive="bg-[#10B981]/15 text-[#10B981] border-l-4 border-[#10B981]"
+          (click)="navegarYCerrar()"
+          class="flex items-center justify-between px-3 py-3 rounded-xl text-sm font-semibold text-[#94A3B8] hover:bg-slate-800 hover:text-white transition"
+        >
+          <div class="flex items-center gap-3">
+            <span>🔔</span>
+            <span>Notificaciones</span>
+          </div>
+          @if (notificacionService.noLeidasCount() > 0) {
+            <span class="px-2 py-0.5 text-[11px] font-bold rounded-full bg-red-500/20 text-red-400 border border-red-500/30">
+              {{ notificacionService.noLeidasCount() }}
+            </span>
+          }
+        </a>
+
         <!-- 6. Perfil -->
         <a
           routerLink="/perfil"

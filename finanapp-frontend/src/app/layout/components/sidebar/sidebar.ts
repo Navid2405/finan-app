@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { LayoutService } from '../../../core/services/layout.service';
+import { NotificacionService } from '../../../core/services/notificacion.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,6 +13,7 @@ import { LayoutService } from '../../../core/services/layout.service';
 export class Sidebar {
   authService = inject(AuthService);
   layoutService = inject(LayoutService);
+  notificacionService = inject(NotificacionService);
   private router = inject(Router);
 
   nombreUsuario = signal<string>(localStorage.getItem('usuario') || 'Usuario');
