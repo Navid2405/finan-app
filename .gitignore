@@ -3,6 +3,7 @@
 .env.local
 .env.*
 *.env
+!.env.example
 /config/application-*.properties
 /config/application-*.yml
 
