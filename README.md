@@ -20,7 +20,7 @@
 ##  Tabla de Contenidos
 - [Contexto y Propuesta de Valor](#-contexto-y-propuesta-de-valor)
 - [Funcionalidades Principales](#-funcionalidades-principales)
-- [Capturas y Recorrido de Demostración](#-capturas-y-recorrido-de-demostración)
+- [Capturas de la Aplicación](#-capturas-de-la-aplicación)
 - [Arquitectura del Sistema](#-arquitectura-del-sistema)
 - [Stack Tecnológico Real](#-stack-tecnológico-real)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
@@ -61,24 +61,51 @@ En América Latina, más del **50% de la fuerza laboral** opera en la economía 
 
 ---
 
-##  Capturas y Recorrido de Demostración
+## 📸 Capturas de la Aplicación
 
+### 📱 Vistas Principales de la Aplicación
 
-La carpeta [`assets/screenshots/`](assets/screenshots/) contiene la guía técnica de resolución y especificaciones para las capturas oficiales:
+<div align="center">
+  <table>
+    <tr>
+      <th align="center">Dashboard Principal</th>
+      <th align="center">Flujo de Transacciones</th>
+      <th align="center">Obligaciones y Cuota</th>
+    </tr>
+    <tr>
+      <td align="center"><img src="assets/screenshots/dashboard.png" width="260" alt="Dashboard Principal" /></td>
+      <td align="center"><img src="assets/screenshots/transacciones.png" width="260" alt="Flujo de Transacciones" /></td>
+      <td align="center"><img src="assets/screenshots/obligaciones.png" width="260" alt="Obligaciones y Cuota" /></td>
+    </tr>
+    <tr>
+      <th align="center">Metas de Ahorro</th>
+      <th align="center">Centro de Notificaciones</th>
+      <th align="center">Perfil de Usuario</th>
+    </tr>
+    <tr>
+      <td align="center"><img src="assets/screenshots/metas.png" width="260" alt="Metas de Ahorro" /></td>
+      <td align="center"><img src="assets/screenshots/notificaciones.png" width="260" alt="Centro de Notificaciones" /></td>
+      <td align="center"><img src="assets/screenshots/perfil.png" width="260" alt="Perfil de Usuario" /></td>
+    </tr>
+    <tr>
+      <th align="center">Inicio de Sesión</th>
+      <th align="center">Registro de Cuenta</th>
+      <th align="center">-</th>
+    </tr>
+    <tr>
+      <td align="center"><img src="assets/screenshots/login.png" width="260" alt="Inicio de Sesión" /></td>
+      <td align="center"><img src="assets/screenshots/registro.png" width="260" alt="Registro de Cuenta" /></td>
+      <td align="center">-</td>
+    </tr>
+  </table>
+</div>
 
-| Módulo / Pantalla | Descripción | Archivo en Repositorio |
-| :--- | :--- | :--- |
-| **Login / Registro** | Acceso seguro con validación reactiva y JWT | [`assets/screenshots/login.png - registro.png`](assets/screenshots/README.md) |
-| **Dashboard Principal** | Balance diario, cuota de seguridad activa y metas | [`assets/screenshots/dashboard.png`](assets/screenshots/README.md) |
-| **Transacciones** | Historial clasificado con filtros de fecha y categorías | [`assets/screenshots/transacciones.png`](assets/screenshots/README.md) |
-| **Obligaciones** | Algoritmo de cuota de seguridad y registro de abonos | [`assets/screenshots/obligaciones.png`](assets/screenshots/README.md) |
-| **Cajitas de Ahorro** | Metas con barras de avance, aportes y retiros | [`assets/screenshots/metas.png`](assets/screenshots/README.md) |
-| **Notificaciones** | Centro de alertas proactivas de vencimientos y metas | [`assets/screenshots/notificaciones.png`](assets/screenshots/README.md) |
-| **Swagger UI** | Especificación interactiva OpenAPI 3 con Bearer Token | [`assets/screenshots/swagger1.png - swagger2.png`](assets/screenshots/README.md) |
+### 📑 Documentación OpenAPI (Swagger UI)
 
----
-
----
+<div align="center">
+  <img src="assets/screenshots/swagger1.png" alt="Swagger UI Endpoints" width="850" />
+  <p><i>Catálogo interactivo de endpoints REST con autenticación Bearer JWT y contratos tipados.</i></p>
+</div>
 
 ##  Arquitectura del Sistema
 
