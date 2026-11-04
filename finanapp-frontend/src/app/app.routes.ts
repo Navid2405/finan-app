@@ -53,6 +53,11 @@ export const routes: Routes = [
         path: 'notificaciones',
         loadComponent: () =>
           import('./features/notificaciones/notificaciones').then((m) => m.NotificacionesComponent)
+      },
+      {
+        path: 'perfil',
+        loadComponent: () =>
+          import('./features/perfil/perfil').then((m) => m.PerfilComponent)
       }
     ]
   }

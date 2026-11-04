@@ -6,10 +6,9 @@ export interface UsuarioModel{
   ocupacion:string
 }
 
-export interface ActualizarUsuario{
-
-  nombre:string,
-  ocupacion:string
+export interface ActualizarUsuario {
+  nombre?: string;
+  ocupacion?: string;
 }
 export interface UsuarioResponse{
   id:number,
