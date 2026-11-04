@@ -40,6 +40,11 @@ export const routes: Routes = [
           import('./features/obligaciones/obligaciones').then((m) => m.Obligaciones)
       },
       {
+        path: 'ahorros',
+        loadComponent: () =>
+          import('./features/metas-ahorro/metas-ahorro').then((m) => m.MetasAhorroComponent)
+      },
+      {
         path: 'categorias',
         loadComponent: () =>
           import('./features/categorias/categorias').then((m) => m.Categorias)
