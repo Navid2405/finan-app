@@ -20,6 +20,7 @@
 ##  Tabla de Contenidos
 - [Contexto y Propuesta de Valor](#-contexto-y-propuesta-de-valor)
 - [Funcionalidades Principales](#-funcionalidades-principales)
+- [Capturas y Recorrido de Demostración](#-capturas-y-recorrido-de-demostración)
 - [Arquitectura del Sistema](#-arquitectura-del-sistema)
 - [Stack Tecnológico Real](#-stack-tecnológico-real)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
@@ -57,6 +58,25 @@ En América Latina, más del **50% de la fuerza laboral** opera en la economía 
 * **Categorías Personalizables:** Categorías base protegidas y creación ilimitada de categorías propias con iconos representativos.
 * **Centro de Notificaciones:** Detección y alertas en tiempo real sobre obligaciones próximas a vencer o vencidas, metas alcanzadas y recordatorios de registro diario.
 * **Perfil y Auditoría:** Modificación de perfil de usuario y soporte de desactivación lógica de cuenta (*Soft Delete*).
+
+---
+
+##  Capturas y Recorrido de Demostración
+
+
+La carpeta [`assets/screenshots/`](assets/screenshots/) contiene la guía técnica de resolución y especificaciones para las capturas oficiales:
+
+| Módulo / Pantalla | Descripción | Archivo en Repositorio |
+| :--- | :--- | :--- |
+| **Login / Registro** | Acceso seguro con validación reactiva y JWT | [`assets/screenshots/login.png - registro.png`](assets/screenshots/README.md) |
+| **Dashboard Principal** | Balance diario, cuota de seguridad activa y metas | [`assets/screenshots/dashboard.png`](assets/screenshots/README.md) |
+| **Transacciones** | Historial clasificado con filtros de fecha y categorías | [`assets/screenshots/transacciones.png`](assets/screenshots/README.md) |
+| **Obligaciones** | Algoritmo de cuota de seguridad y registro de abonos | [`assets/screenshots/obligaciones.png`](assets/screenshots/README.md) |
+| **Cajitas de Ahorro** | Metas con barras de avance, aportes y retiros | [`assets/screenshots/metas.png`](assets/screenshots/README.md) |
+| **Notificaciones** | Centro de alertas proactivas de vencimientos y metas | [`assets/screenshots/notificaciones.png`](assets/screenshots/README.md) |
+| **Swagger UI** | Especificación interactiva OpenAPI 3 con Bearer Token | [`assets/screenshots/swagger1.png - swagger2.png`](assets/screenshots/README.md) |
+
+---
 
 ---
 
