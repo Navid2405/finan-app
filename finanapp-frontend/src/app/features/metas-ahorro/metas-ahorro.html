@@ -1,0 +1,986 @@
+<div class="space-y-5">
+
+  <!-- Toast de Éxito -->
+  @if (exitoMensaje()) {
+    <div class="fixed top-5 left-1/2 -translate-x-1/2 z-50 max-w-sm w-[90%] bg-[#151C2C] border border-emerald-500/40 text-emerald-400 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+      <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-base shrink-0">
+        ✓
+      </div>
+      <p class="text-xs sm:text-sm font-semibold text-slate-100 flex-1">{{ exitoMensaje() }}</p>
+      <button (click)="exitoMensaje.set(null)" class="text-slate-400 hover:text-white p-1 cursor-pointer">✕</button>
+    </div>
+  }
+
+  <!-- Barra Superior / Encabezado -->
+  <div class="flex items-center justify-between pt-2">
+    <button
+      (click)="layoutService.toggle()"
+      class="p-2 text-[#94A3B8] hover:text-white hover:bg-slate-800/60 rounded-xl transition cursor-pointer"
+      title="Abrir menú"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+    <div class="text-center">
+      <h1 class="text-xl font-bold tracking-tight text-white">Metas de Ahorro</h1>
+      <span class="text-[11px] text-[#94A3B8] font-medium">{{ listaMetas().length }} metas en total</span>
+    </div>
+    <button
+      (click)="abrirModalCrear()"
+      class="p-2 text-[#10B981] hover:text-emerald-300 hover:bg-emerald-500/10 rounded-xl transition flex items-center justify-center cursor-pointer"
+      title="Nueva Meta"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Alerta de Error General -->
+  @if (errorMensaje()) {
+    <div class="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-[#EF4444] text-xs sm:text-sm flex items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2">
+        <span class="text-base">⚠️</span>
+        <span>{{ errorMensaje() }}</span>
+      </div>
+      <button (click)="cargarDatos()" class="font-bold underline text-xs hover:text-red-300 cursor-pointer">
+        Reintentar
+      </button>
+    </div>
+  }
+
+  <!-- Tarjeta de Resumen Global de Ahorros -->
+  <div class="bg-[#151C2C] border border-slate-800/80 rounded-3xl p-5 shadow-lg space-y-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <span class="text-[11px] uppercase tracking-wider text-[#94A3B8] font-semibold">Total Ahorrado</span>
+        <div class="text-2xl sm:text-3xl font-extrabold text-[#10B981] mt-0.5 tracking-tight">
+          {{ formatearCOP(totalAhorradoGlobal()) }}
+        </div>
+      </div>
+      <div class="text-right">
+        <span class="text-[10px] uppercase text-[#94A3B8] font-semibold">Meta Global</span>
+        <div class="text-xs sm:text-sm font-bold text-white mt-0.5">
+          {{ formatearCOP(totalObjetivoGlobal()) }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Barra de Progreso Global -->
+    <div class="space-y-1.5 pt-1">
+      <div class="flex justify-between text-[11px] text-[#94A3B8] font-medium">
+        <span>Progreso general</span>
+        <span class="text-white font-bold">{{ porcentajeGlobalAhorrado() }}%</span>
+      </div>
+      <div class="w-full bg-[#0B0F19] h-2.5 rounded-full overflow-hidden border border-slate-800">
+        <div
+          class="bg-[#10B981] h-full rounded-full transition-all duration-500"
+          [style.width.%]="porcentajeGlobalAhorrado()"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Indicadores rápidos -->
+    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80 text-xs">
+      <div class="flex items-center gap-2 p-2 rounded-xl bg-[#0B0F19] border border-slate-800">
+        <div class="w-2.5 h-2.5 rounded-full bg-sky-400"></div>
+        <div class="min-w-0">
+          <span class="text-[10px] text-[#94A3B8] block">En Progreso</span>
+          <span class="font-bold text-white text-xs">{{ conteoEnProgreso() }} metas</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 p-2 rounded-xl bg-[#0B0F19] border border-slate-800">
+        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+        <div class="min-w-0">
+          <span class="text-[10px] text-[#94A3B8] block">Completadas</span>
+          <span class="font-bold text-white text-xs">{{ conteoCompletadas() }} metas 🏆</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón Principal "Nueva Meta" -->
+  <div>
+    <button
+      (click)="abrirModalCrear()"
+      class="w-full py-3.5 px-4 bg-[#10B981] hover:bg-emerald-600 active:scale-[0.98] text-white font-bold text-sm sm:text-base rounded-2xl shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2.5 cursor-pointer"
+    >
+      <span class="text-xl leading-none font-extrabold">+</span>
+      <span>Crear Nueva Meta de Ahorro</span>
+    </button>
+  </div>
+
+  <!-- Buscador y Filtros -->
+  <div class="space-y-2.5">
+    <!-- Buscador -->
+    <div class="relative">
+      <input
+        type="text"
+        [value]="terminoBusqueda()"
+        (input)="actualizarBusqueda($event)"
+        placeholder="Buscar meta por nombre (ej: Viaje, Fondo, Moto)..."
+        class="w-full pl-10 pr-10 py-3 rounded-2xl bg-[#151C2C] border border-slate-800 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition shadow-inner"
+      />
+      <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      @if (terminoBusqueda()) {
+        <button
+          (click)="limpiarBusqueda()"
+          class="absolute right-3 top-3 text-slate-400 hover:text-white p-0.5 rounded-md transition cursor-pointer"
+          title="Limpiar búsqueda"
+        >
+          ✕
+        </button>
+      }
+    </div>
+
+    <!-- Pestañas de Estado -->
+    <div class="flex gap-2 p-1 bg-[#151C2C] rounded-2xl border border-slate-800 text-xs">
+      <button
+        (click)="cambiarFiltroEstado('TODAS')"
+        [class]="filtroEstado() === 'TODAS' ? 'bg-slate-700/80 text-white font-bold shadow' : 'text-[#94A3B8] hover:text-white'"
+        class="flex-1 py-2 text-xs font-semibold rounded-xl transition text-center cursor-pointer"
+      >
+        Todas ({{ listaMetas().length }})
+      </button>
+      <button
+        (click)="cambiarFiltroEstado('EN_PROGRESO')"
+        [class]="filtroEstado() === 'EN_PROGRESO' ? 'bg-sky-500 text-slate-900 font-extrabold shadow' : 'text-[#94A3B8] hover:text-white'"
+        class="flex-1 py-2 text-xs font-semibold rounded-xl transition text-center cursor-pointer"
+      >
+        En Progreso ({{ conteoEnProgreso() }})
+      </button>
+      <button
+        (click)="cambiarFiltroEstado('COMPLETADA')"
+        [class]="filtroEstado() === 'COMPLETADA' ? 'bg-[#10B981] text-white font-bold shadow' : 'text-[#94A3B8] hover:text-white'"
+        class="flex-1 py-2 text-xs font-semibold rounded-xl transition text-center cursor-pointer"
+      >
+        Completadas ({{ conteoCompletadas() }})
+      </button>
+    </div>
+  </div>
+
+  <!-- Lista de Metas de Ahorro -->
+  @if (cargando()) {
+    <div class="space-y-3 py-2">
+      @for (item of [1, 2, 3]; track item) {
+        <div class="p-4 bg-[#151C2C] border border-slate-800/60 rounded-3xl space-y-3 animate-pulse">
+          <div class="flex justify-between items-center">
+            <div class="h-4 bg-slate-800 rounded w-1/3"></div>
+            <div class="h-4 bg-slate-800 rounded w-16"></div>
+          </div>
+          <div class="h-2.5 bg-slate-800 rounded-full w-full"></div>
+          <div class="h-4 bg-slate-800 rounded w-1/2"></div>
+        </div>
+      }
+    </div>
+  } @else if (metasFiltradas().length === 0) {
+    <!-- Estado Vacío -->
+    <div class="text-center py-12 px-4 bg-[#151C2C]/50 border border-slate-800/60 rounded-3xl space-y-3">
+      <div class="text-4xl">🎯</div>
+      <h3 class="text-white font-bold text-sm sm:text-base">No hay metas de ahorro</h3>
+      <p class="text-xs text-[#94A3B8] max-w-xs mx-auto">
+        @if (terminoBusqueda() || filtroEstado() !== 'TODAS') {
+          No se encontraron metas con los filtros actuales. Intenta cambiar de pestaña o limpiar la búsqueda.
+        } @else {
+          ¿Sueñas con unas vacaciones, un fondo de emergencia o un nuevo proyecto? ¡Crea tu primera meta y dale seguimiento a tus ahorros!
+        }
+      </p>
+      @if (terminoBusqueda() || filtroEstado() !== 'TODAS') {
+        <button
+          (click)="limpiarBusqueda(); cambiarFiltroEstado('TODAS')"
+          class="text-xs text-[#10B981] hover:underline font-semibold cursor-pointer"
+        >
+          Ver todas las metas
+        </button>
+      } @else {
+        <button
+          (click)="abrirModalCrear()"
+          class="mt-2 inline-flex items-center gap-1.5 px-4 py-2 bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 rounded-xl text-xs font-bold hover:bg-[#10B981]/25 transition cursor-pointer"
+        >
+          <span>+</span> Crear mi primera meta
+        </button>
+      }
+    </div>
+  } @else {
+    <div class="space-y-3">
+      @for (meta of metasFiltradas(); track meta.id) {
+        <div class="p-4 bg-[#151C2C] border border-slate-800/80 rounded-3xl shadow-md space-y-3 hover:border-slate-700/80 transition">
+
+          <!-- Encabezado de la Tarjeta -->
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🎯</span>
+                <h3 class="text-white font-bold text-base truncate">{{ meta.titulo }}</h3>
+              </div>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-[10px] text-slate-400">
+                  Objetivo: <span class="font-semibold text-slate-200">{{ formatearCOP(meta.montoObjetivo) }}</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Badge de Estado -->
+            <div>
+              @if (meta.estado === EstadoMeta.COMPLETADA) {
+                <span class="px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-emerald-500/15 text-[#10B981] border border-emerald-500/30 flex items-center gap-1">
+                  🏆 Completada
+                </span>
+              } @else if (meta.estado === EstadoMeta.CANCELADA) {
+                <span class="px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-slate-800 text-slate-400 border border-slate-700/50">
+                  Cancelada
+                </span>
+              } @else {
+                <span class="px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-sky-500/15 text-sky-400 border border-sky-500/30 flex items-center gap-1">
+                  En progreso
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Barra de Progreso y Valores -->
+          <div class="space-y-1.5 pt-1">
+            <div class="flex justify-between items-baseline text-xs">
+              <span class="text-[#94A3B8]">
+                Ahorrado:
+                <span class="font-extrabold text-[#10B981] text-sm">
+                  {{ formatearCOP(meta.montoAcumulado || 0) }}
+                </span>
+              </span>
+              <span class="text-[11px] text-[#94A3B8]">
+                {{ obtenerPorcentajeMeta(meta) }}%
+              </span>
+            </div>
+
+            <!-- Barra -->
+            <div class="w-full bg-[#0B0F19] h-2.5 rounded-full overflow-hidden border border-slate-800">
+              <div
+                class="h-full rounded-full transition-all duration-500"
+                [style.width.%]="obtenerPorcentajeMeta(meta)"
+                [class]="meta.estado === EstadoMeta.COMPLETADA ? 'bg-[#10B981]' : 'bg-gradient-to-r from-sky-400 to-[#10B981]'"
+              ></div>
+            </div>
+
+            <div class="flex justify-between text-[10px] text-slate-400">
+              @if (meta.estado === EstadoMeta.COMPLETADA) {
+                <span class="text-emerald-400 font-semibold">¡Felicidades, meta cumplida!</span>
+              } @else {
+                <span>
+                  Faltan: {{ formatearCOP(meta.montoObjetivo - (meta.montoAcumulado || 0)) }}
+                </span>
+              }
+
+              @if (meta.fechaLimite) {
+                <span
+                  class="font-semibold"
+                  [class.text-amber-400]="!obtenerDiasRestantes(meta.fechaLimite).vencido && meta.estado !== EstadoMeta.COMPLETADA"
+                  [class.text-red-400]="obtenerDiasRestantes(meta.fechaLimite).vencido && meta.estado !== EstadoMeta.COMPLETADA"
+                  [class.text-emerald-400]="meta.estado === EstadoMeta.COMPLETADA"
+                >
+                  📅 {{ formatearFechaLegible(meta.fechaLimite) }} ({{ obtenerDiasRestantes(meta.fechaLimite).texto }})
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Acciones de la Tarjeta -->
+          <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 gap-2">
+            <!-- Iconos secundarios -->
+            <div class="flex items-center gap-1">
+              <button
+                (click)="abrirModalHistorial(meta)"
+                class="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition flex items-center gap-1 cursor-pointer"
+                title="Historial de aportes"
+              >
+                <span>📜</span>
+                <span class="text-[11px]">Aportes</span>
+              </button>
+
+              <button
+                (click)="abrirModalEditar(meta)"
+                class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition cursor-pointer"
+                title="Editar meta"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+              </button>
+
+              <button
+                (click)="abrirConfirmarEliminar(meta)"
+                class="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition cursor-pointer"
+                title="Eliminar meta"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Botones Principales: Retirar y Abonar -->
+            <div class="flex items-center gap-2">
+              @if ((meta.montoAcumulado || 0) > 0) {
+                <button
+                  (click)="abrirModalRetiro(meta)"
+                  class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                  title="Retirar dinero acumulado"
+                >
+                  <span>💸</span>
+                  <span>Retirar</span>
+                </button>
+              }
+
+              <button
+                (click)="abrirModalAporte(meta)"
+                class="px-3 py-1.5 bg-[#10B981] hover:bg-emerald-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-500/20 transition flex items-center gap-1 cursor-pointer"
+              >
+                <span class="text-sm font-extrabold">+</span>
+                <span>Abonar</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- Modal Crear / Editar Meta de Ahorro -->
+@if (modalAbierto()) {
+  <div
+    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+    (click)="cerrarModal()"
+  >
+    <div
+      class="w-full max-w-md bg-[#151C2C] border border-slate-800/80 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-4 animate-in slide-in-from-bottom duration-200"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Encabezado -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div>
+          <h2 class="text-lg font-bold text-white">
+            {{ metaEnEdicion() ? 'Editar Meta de Ahorro' : 'Nueva Meta de Ahorro' }}
+          </h2>
+          <p class="text-xs text-[#94A3B8]">
+            {{ metaEnEdicion() ? 'Modifica los parámetros de tu objetivo financiero' : 'Define tu objetivo, monto y fecha límite' }}
+          </p>
+        </div>
+        <button
+          (click)="cerrarModal()"
+          class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/60 transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Alerta Error en Modal -->
+      @if (modalError()) {
+        <div class="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-[#EF4444] text-xs flex items-center gap-2.5">
+          <span class="text-base">⚠️</span>
+          <span>{{ modalError() }}</span>
+        </div>
+      }
+
+      <form [formGroup]="metaForm" (ngSubmit)="guardarMeta()" class="space-y-4">
+
+        <!-- Título -->
+        <div>
+          <label for="meta-titulo" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Título / Nombre de la Meta
+          </label>
+          <input
+            id="meta-titulo"
+            type="text"
+            formControlName="titulo"
+            placeholder="Ej: Fondo de Emergencia, Vacaciones Cancún..."
+            maxlength="100"
+            class="w-full px-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition"
+            [class.border-red-500]="metaForm.get('titulo')?.touched && metaForm.get('titulo')?.invalid"
+          />
+          @if (metaForm.get('titulo')?.touched && metaForm.get('titulo')?.invalid) {
+            <span class="text-xs text-[#EF4444] mt-1 ml-1 block">El título es obligatorio.</span>
+          }
+        </div>
+
+        <!-- Monto Objetivo -->
+        <div>
+          <label for="meta-monto" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Monto Objetivo (COP)
+          </label>
+          <div class="relative">
+            <span class="absolute left-4 top-3 text-slate-400 font-bold text-sm">$</span>
+            <input
+              id="meta-monto"
+              type="number"
+              min="1"
+              step="any"
+              formControlName="montoObjetivo"
+              placeholder="0"
+              class="w-full pl-8 pr-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white placeholder-slate-600 text-base font-semibold focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition"
+              [class.border-red-500]="metaForm.get('montoObjetivo')?.touched && metaForm.get('montoObjetivo')?.invalid"
+            />
+          </div>
+          @if (metaForm.get('montoObjetivo')?.touched && metaForm.get('montoObjetivo')?.invalid) {
+            <span class="text-xs text-[#EF4444] mt-1 ml-1 block">Ingresa un monto objetivo mayor a 0.</span>
+          }
+        </div>
+
+        <!-- Fecha Límite -->
+        <div>
+          <label for="meta-fecha" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Fecha Límite Deseada
+          </label>
+          <input
+            id="meta-fecha"
+            type="date"
+            formControlName="fechaLimite"
+            class="w-full px-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white text-sm focus:outline-none focus:border-[#10B981] transition cursor-pointer"
+            [class.border-red-500]="metaForm.get('fechaLimite')?.touched && metaForm.get('fechaLimite')?.invalid"
+          />
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="pt-2 flex gap-3">
+          <button
+            type="button"
+            (click)="cerrarModal()"
+            [disabled]="guardando()"
+            class="flex-1 py-3.5 px-4 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 font-semibold text-sm rounded-2xl transition disabled:opacity-50 cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            [disabled]="guardando() || metaForm.invalid"
+            class="flex-1 py-3.5 px-4 bg-[#10B981] hover:bg-emerald-600 active:scale-95 text-white font-bold text-sm rounded-2xl shadow-lg shadow-emerald-500/20 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+          >
+            @if (guardando()) {
+              <span class="inline-block animate-spin mr-1">⏳</span>
+              <span>Guardando...</span>
+            } @else {
+              <span>{{ metaEnEdicion() ? 'Guardar Cambios' : 'Crear Meta' }}</span>
+            }
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Modal Abonar a Meta -->
+@if (modalAporteAbierto() && metaParaAporte()) {
+  <div
+    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+    (click)="cerrarModalAporte()"
+  >
+    <div
+      class="w-full max-w-md bg-[#151C2C] border border-slate-800/80 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-4 animate-in slide-in-from-bottom duration-200"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div>
+          <h2 class="text-lg font-bold text-white">Abonar a tu Meta</h2>
+          <p class="text-xs text-[#94A3B8]">
+            Meta: <span class="font-bold text-white">{{ metaParaAporte()?.titulo }}</span>
+          </p>
+        </div>
+        <button
+          (click)="cerrarModalAporte()"
+          class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/60 transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Tarjeta informativa de la meta -->
+      <div class="p-3 bg-[#0B0F19] border border-slate-800 rounded-2xl space-y-2">
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-[#94A3B8]">Acumulado actual:</span>
+          <span class="font-extrabold text-[#10B981] text-sm">
+            {{ formatearCOP(metaParaAporte()?.montoAcumulado || 0) }}
+          </span>
+        </div>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-[#94A3B8]">Objetivo:</span>
+          <span class="font-bold text-white">
+            {{ formatearCOP(metaParaAporte()?.montoObjetivo || 0) }}
+          </span>
+        </div>
+
+        <!-- Atajos de aporte rápido -->
+        <div class="pt-2 flex flex-wrap gap-1.5 border-t border-slate-800/80">
+          <button
+            type="button"
+            (click)="sumarAlAporte(20000)"
+            class="px-2 py-1 rounded-lg text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold cursor-pointer"
+          >
+            + $20.000
+          </button>
+          <button
+            type="button"
+            (click)="sumarAlAporte(50000)"
+            class="px-2 py-1 rounded-lg text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold cursor-pointer"
+          >
+            + $50.000
+          </button>
+          <button
+            type="button"
+            (click)="sumarAlAporte(100000)"
+            class="px-2 py-1 rounded-lg text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold cursor-pointer"
+          >
+            + $100.000
+          </button>
+          <button
+            type="button"
+            (click)="llenarAporteRestante()"
+            class="px-2 py-1 rounded-lg text-[11px] bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-bold hover:bg-[#10B981]/30 cursor-pointer"
+          >
+            Completar Meta
+          </button>
+        </div>
+      </div>
+
+      @if (aporteModalError()) {
+        <div class="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-[#EF4444] text-xs flex items-center gap-2.5">
+          <span class="text-base">⚠️</span>
+          <span>{{ aporteModalError() }}</span>
+        </div>
+      }
+
+      <form [formGroup]="aporteForm" (ngSubmit)="guardarAporte()" class="space-y-4">
+
+        <!-- Monto -->
+        <div>
+          <label for="aporte-monto" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Monto a Abonar (COP)
+          </label>
+          <div class="relative">
+            <span class="absolute left-4 top-3 text-slate-400 font-bold text-sm">$</span>
+            <input
+              id="aporte-monto"
+              type="number"
+              min="1"
+              step="any"
+              formControlName="monto"
+              placeholder="0"
+              class="w-full pl-8 pr-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white placeholder-slate-600 text-base font-semibold focus:outline-none focus:border-[#10B981] transition"
+              [class.border-red-500]="aporteForm.get('monto')?.touched && aporteForm.get('monto')?.invalid"
+            />
+          </div>
+        </div>
+
+        <!-- Categoría del Gasto -->
+        <div>
+          <label for="aporte-cat" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Categoría Contable del Aporte
+          </label>
+          <select
+            id="aporte-cat"
+            formControlName="categoriaId"
+            class="w-full px-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white text-sm focus:outline-none focus:border-[#10B981] transition cursor-pointer"
+          >
+            @for (cat of listaCategoriasGasto(); track cat.id) {
+              <option [value]="cat.id" class="bg-[#151C2C] text-white py-1">
+                {{ cat.icono || '🏷️' }} {{ cat.nombre }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- Método de Pago -->
+        <div>
+          <label class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Origen / Método de Pago
+          </label>
+          <div class="flex flex-wrap gap-1.5 mb-2">
+            @for (metodo of metodosPago; track metodo) {
+              <button
+                type="button"
+                (click)="seleccionarMetodoAporte(metodo)"
+                [class]="aporteForm.get('metodoPago')?.value === metodo ? 'bg-[#10B981]/25 text-[#10B981] border-[#10B981]/50 font-bold' : 'bg-[#0B0F19] text-[#94A3B8] border-slate-800 hover:text-white'"
+                class="px-2.5 py-1 rounded-xl text-xs border transition active:scale-95 cursor-pointer"
+              >
+                {{ metodo }}
+              </button>
+            }
+          </div>
+          <input
+            type="text"
+            formControlName="metodoPago"
+            placeholder="O escribe otro método..."
+            class="w-full px-4 py-2.5 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white placeholder-slate-600 text-xs focus:outline-none focus:border-[#10B981] transition"
+          />
+        </div>
+
+        <!-- Fecha -->
+        <div>
+          <label for="aporte-fecha" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Fecha del Abono
+          </label>
+          <input
+            id="aporte-fecha"
+            type="date"
+            formControlName="fecha"
+            class="w-full px-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white text-sm focus:outline-none focus:border-[#10B981] transition cursor-pointer"
+          />
+        </div>
+
+        <!-- Nota Opcional -->
+        <div>
+          <label for="aporte-nota" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Nota (Opcional)
+          </label>
+          <input
+            id="aporte-nota"
+            type="text"
+            formControlName="nota"
+            placeholder="Ej: Aporte quincenal, Bonificación..."
+            class="w-full px-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-[#10B981] transition"
+          />
+        </div>
+
+        <!-- Botones -->
+        <div class="pt-2 flex gap-3">
+          <button
+            type="button"
+            (click)="cerrarModalAporte()"
+            [disabled]="abonando()"
+            class="flex-1 py-3.5 px-4 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 font-semibold text-sm rounded-2xl transition disabled:opacity-50 cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            [disabled]="abonando() || aporteForm.invalid"
+            class="flex-1 py-3.5 px-4 bg-[#10B981] hover:bg-emerald-600 active:scale-95 text-white font-bold text-sm rounded-2xl shadow-lg shadow-emerald-500/20 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+          >
+            @if (abonando()) {
+              <span class="inline-block animate-spin mr-1">⏳</span>
+              <span>Abonando...</span>
+            } @else {
+              <span>Confirmar Abono</span>
+            }
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Modal Retirar Dinero de Meta -->
+@if (modalRetiroAbierto() && metaParaRetiro()) {
+  <div
+    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+    (click)="cerrarModalRetiro()"
+  >
+    <div
+      class="w-full max-w-md bg-[#151C2C] border border-slate-800/80 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-4 animate-in slide-in-from-bottom duration-200"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div>
+          <h2 class="text-lg font-bold text-white">Retirar Dinero</h2>
+          <p class="text-xs text-[#94A3B8]">
+            Desde meta: <span class="font-bold text-white">{{ metaParaRetiro()?.titulo }}</span>
+          </p>
+        </div>
+        <button
+          (click)="cerrarModalRetiro()"
+          class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/60 transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Tarjeta informativa de saldo acumulado -->
+      <div class="p-3 bg-[#0B0F19] border border-slate-800 rounded-2xl flex items-center justify-between">
+        <div>
+          <span class="text-[10px] uppercase text-[#94A3B8] font-semibold">Saldo Disponible para Retiro</span>
+          <div class="text-lg font-extrabold text-[#10B981]">
+            {{ formatearCOP(metaParaRetiro()?.montoAcumulado || 0) }}
+          </div>
+        </div>
+        <!-- Atajos -->
+        <div class="flex gap-1.5">
+          <button
+            type="button"
+            (click)="establecerMontoRetiroPorcentaje(50)"
+            class="px-2 py-1 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer"
+          >
+            50%
+          </button>
+          <button
+            type="button"
+            (click)="establecerMontoRetiroPorcentaje(100)"
+            class="px-2 py-1 rounded-lg text-xs bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold hover:bg-amber-500/30 cursor-pointer"
+          >
+            100% Todo
+          </button>
+        </div>
+      </div>
+
+      @if (retiroModalError()) {
+        <div class="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-[#EF4444] text-xs flex items-center gap-2.5">
+          <span class="text-base">⚠️</span>
+          <span>{{ retiroModalError() }}</span>
+        </div>
+      }
+
+      <form [formGroup]="retiroForm" (ngSubmit)="guardarRetiro()" class="space-y-4">
+
+        <!-- Monto a Retirar -->
+        <div>
+          <label for="retiro-monto" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Monto a Retirar (COP)
+          </label>
+          <div class="relative">
+            <span class="absolute left-4 top-3 text-slate-400 font-bold text-sm">$</span>
+            <input
+              id="retiro-monto"
+              type="number"
+              min="1"
+              step="any"
+              formControlName="montoRetiro"
+              placeholder="0"
+              class="w-full pl-8 pr-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white placeholder-slate-600 text-base font-semibold focus:outline-none focus:border-amber-400 transition"
+              [class.border-red-500]="retiroForm.get('montoRetiro')?.touched && retiroForm.get('montoRetiro')?.invalid"
+            />
+          </div>
+        </div>
+
+        <!-- Categoría de Ingreso para reincorporar -->
+        <div>
+          <label for="retiro-cat" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Categoría Contable del Ingreso
+          </label>
+          <select
+            id="retiro-cat"
+            formControlName="categoriaId"
+            class="w-full px-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white text-sm focus:outline-none focus:border-[#10B981] transition cursor-pointer"
+          >
+            @for (cat of listaCategoriasIngreso(); track cat.id) {
+              <option [value]="cat.id" class="bg-[#151C2C] text-white py-1">
+                {{ cat.icono || '💰' }} {{ cat.nombre }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- Método de Recepción -->
+        <div>
+          <label class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Destino / Método
+          </label>
+          <div class="flex flex-wrap gap-1.5 mb-2">
+            @for (metodo of metodosPago; track metodo) {
+              <button
+                type="button"
+                (click)="seleccionarMetodoRetiro(metodo)"
+                [class]="retiroForm.get('metodoPago')?.value === metodo ? 'bg-amber-500/25 text-amber-300 border-amber-500/50 font-bold' : 'bg-[#0B0F19] text-[#94A3B8] border-slate-800 hover:text-white'"
+                class="px-2.5 py-1 rounded-xl text-xs border transition active:scale-95 cursor-pointer"
+              >
+                {{ metodo }}
+              </button>
+            }
+          </div>
+          <input
+            type="text"
+            formControlName="metodoPago"
+            placeholder="O escribe otro método..."
+            class="w-full px-4 py-2.5 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white placeholder-slate-600 text-xs focus:outline-none focus:border-amber-400 transition"
+          />
+        </div>
+
+        <!-- Fecha -->
+        <div>
+          <label for="retiro-fecha" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Fecha del Retiro
+          </label>
+          <input
+            id="retiro-fecha"
+            type="date"
+            formControlName="fecha"
+            class="w-full px-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white text-sm focus:outline-none focus:border-amber-400 transition cursor-pointer"
+          />
+        </div>
+
+        <!-- Descripción Opcional -->
+        <div>
+          <label for="retiro-desc" class="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 ml-1">
+            Motivo / Descripción (Opcional)
+          </label>
+          <input
+            id="retiro-desc"
+            type="text"
+            formControlName="descripcion"
+            placeholder="Ej: Uso para emergencia, Compra anticipada..."
+            class="w-full px-4 py-3 rounded-2xl bg-[#0B0F19] border border-slate-800 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-amber-400 transition"
+          />
+        </div>
+
+        <!-- Botones -->
+        <div class="pt-2 flex gap-3">
+          <button
+            type="button"
+            (click)="cerrarModalRetiro()"
+            [disabled]="retirando()"
+            class="flex-1 py-3.5 px-4 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 font-semibold text-sm rounded-2xl transition disabled:opacity-50 cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            [disabled]="retirando() || retiroForm.invalid"
+            class="flex-1 py-3.5 px-4 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-900 font-extrabold text-sm rounded-2xl shadow-lg shadow-amber-500/20 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+          >
+            @if (retirando()) {
+              <span class="inline-block animate-spin mr-1">⏳</span>
+              <span>Retirando...</span>
+            } @else {
+              <span>Confirmar Retiro</span>
+            }
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Modal Historial de Aportes -->
+@if (modalHistorialAbierto()) {
+  <div
+    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+    (click)="cerrarModalHistorial()"
+  >
+    <div
+      class="w-full max-w-md bg-[#151C2C] border border-slate-800/80 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-4 animate-in slide-in-from-bottom duration-200"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div>
+          <h2 class="text-lg font-bold text-white">Historial de Aportes</h2>
+          <p class="text-xs text-[#94A3B8]">
+            Abonos realizados a: <span class="font-bold text-white">{{ metaHistorial()?.titulo }}</span>
+          </p>
+        </div>
+        <button
+          (click)="cerrarModalHistorial()"
+          class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/60 transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      @if (cargandoHistorial()) {
+        <div class="text-center py-8 text-slate-400 text-sm">
+          Cargando historial de aportes...
+        </div>
+      } @else if (historialAportes().length === 0) {
+        <div class="text-center py-8 px-4 bg-[#0B0F19] rounded-2xl border border-slate-800 space-y-2">
+          <div class="text-2xl">📜</div>
+          <p class="text-xs text-[#94A3B8]">No hay registros de aportes aún para esta meta.</p>
+        </div>
+      } @else {
+        <div class="space-y-2 max-h-80 overflow-y-auto pr-1">
+          @for (aporte of historialAportes(); track aporte.id) {
+            <div class="p-3 bg-[#0B0F19] border border-slate-800 rounded-2xl flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/15 text-[#10B981] flex items-center justify-center font-bold text-sm">
+                  +
+                </div>
+                <div>
+                  <span class="text-xs font-bold text-white block">
+                    {{ formatearCOP(aporte.monto) }}
+                  </span>
+                  @if (aporte.nota) {
+                    <span class="text-[11px] text-slate-300 block truncate max-w-[180px]">
+                      {{ aporte.nota }}
+                    </span>
+                  }
+                  <span class="text-[10px] text-slate-500">
+                    {{ formatearFechaLegible(aporte.fecha) }}
+                  </span>
+                </div>
+              </div>
+              <span class="text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                Aporte exitoso
+              </span>
+            </div>
+          }
+        </div>
+      }
+
+      <div class="pt-2">
+        <button
+          type="button"
+          (click)="cerrarModalHistorial()"
+          class="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs sm:text-sm rounded-2xl transition cursor-pointer"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal Confirmación para Eliminar Meta -->
+@if (modalEliminarAbierto() && metaAEliminar()) {
+  <div
+    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+    (click)="cerrarConfirmarEliminar()"
+  >
+    <div
+      class="w-full max-w-sm bg-[#151C2C] border border-slate-800/80 rounded-3xl p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-200"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="w-12 h-12 rounded-2xl bg-red-500/15 text-[#EF4444] border border-red-500/30 text-2xl flex items-center justify-center mx-auto">
+        🗑️
+      </div>
+
+      <div class="text-center space-y-1">
+        <h3 class="text-base font-bold text-white">¿Eliminar meta de ahorro?</h3>
+        <p class="text-xs text-[#94A3B8]">
+          ¿Estás seguro de que deseas eliminar la meta
+          <span class="font-bold text-white">"{{ metaAEliminar()?.titulo }}"</span>?
+          @if ((metaAEliminar()?.montoAcumulado || 0) > 0) {
+            <span class="block text-amber-300 font-semibold mt-1">
+              Nota: Cuenta con un saldo acumulado de {{ formatearCOP(metaAEliminar()?.montoAcumulado || 0) }}.
+            </span>
+          }
+        </p>
+      </div>
+
+      <div class="flex gap-2.5 pt-2">
+        <button
+          type="button"
+          (click)="cerrarConfirmarEliminar()"
+          [disabled]="eliminando()"
+          class="flex-1 py-3 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs sm:text-sm rounded-2xl transition disabled:opacity-50 cursor-pointer"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          (click)="confirmarEliminar()"
+          [disabled]="eliminando()"
+          class="flex-1 py-3 px-3 bg-[#EF4444] hover:bg-red-600 text-white font-bold text-xs sm:text-sm rounded-2xl shadow-lg shadow-red-500/20 transition disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          @if (eliminando()) {
+            <span class="inline-block animate-spin mr-1">⏳</span>
+            <span>Eliminando...</span>
+          } @else {
+            <span>Sí, eliminar</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}
