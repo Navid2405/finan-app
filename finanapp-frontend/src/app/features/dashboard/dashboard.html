@@ -1,66 +1,303 @@
-<div class="space-y-6">
+<div class="space-y-6 animate-in fade-in duration-300">
+
   <!-- Top Bar -->
   <div class="flex items-center justify-between pt-2">
-    <button (click)="layoutService.toggle()" class="p-2 text-[#94A3B8] hover:text-white">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    <button
+      (click)="layoutService.toggle()"
+      class="p-2 text-[#94A3B8] hover:text-white rounded-xl hover:bg-slate-800/60 transition cursor-pointer"
+      title="Abrir menú"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
     </button>
+
     <h1 class="text-xl font-bold tracking-tight text-white">FinanApp</h1>
-    <button (click)="irANotificaciones()" class="p-2 text-[#94A3B8] hover:text-white relative cursor-pointer" title="Notificaciones">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-      @if (notificacionService.noLeidasCount() > 0) {
-        <span class="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 bg-[#EF4444] text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
-          {{ notificacionService.noLeidasCount() }}
-        </span>
-      }
-    </button>
-  </div>
 
-  <div class="text-center py-6">
-    <span class="text-xs sm:text-sm font-medium text-[#94A3B8] tracking-wider uppercase">Balance Diario</span>
-    <div class="text-5xl font-extrabold text-white mt-2 tracking-tight">$85,000</div>
-    <span class="text-xs font-semibold text-[#94A3B8] uppercase tracking-widest mt-1 block">COP</span>
-  </div>
+    <div class="flex items-center gap-1">
+      <!-- Botón de recarga de datos -->
+      <button
+        (click)="cargarDatosDashboard()"
+        [disabled]="cargando()"
+        class="p-2 text-[#94A3B8] hover:text-white rounded-xl hover:bg-slate-800/60 transition disabled:opacity-50 cursor-pointer"
+        title="Actualizar datos"
+      >
+        <svg
+          class="w-5 h-5"
+          [class.animate-spin]="cargando()"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+          />
+        </svg>
+      </button>
 
-  <!-- Acciones de ingreso y gasto -->
-  <div class="grid grid-cols-2 gap-4">
-    <button (click)="irACrear('INGRESO')" class="flex items-center justify-center gap-2 py-4 px-4 bg-[#10B981] hover:bg-emerald-600 active:scale-95 text-white font-bold text-base sm:text-lg rounded-2xl shadow-lg shadow-emerald-500/20 transition cursor-pointer">
-      <span class="text-2xl leading-none">+</span> Ingreso
-    </button>
-
-    <button (click)="irACrear('GASTO')" class="flex items-center justify-center gap-2 py-4 px-4 bg-[#EF4444] hover:bg-red-600 active:scale-95 text-white font-bold text-base sm:text-lg rounded-2xl shadow-lg shadow-red-500/20 transition cursor-pointer">
-      <span class="text-2xl leading-none">-</span> Gasto
-    </button>
-  </div>
-
-  <!-- Avisos-->
-  <div class="bg-[#F59E0B]/10 border border-[#F59E0B]/40 rounded-2xl p-4 flex items-start gap-3.5">
-    <div class="p-2 bg-[#F59E0B]/20 text-[#F59E0B] rounded-xl text-lg">⚠️</div>
-    <div class="flex-1">
-      <h3 class="text-sm font-bold text-[#F59E0B]">Cuota de Seguridad:</h3>
-      <p class="text-xs text-amber-200/80 mt-1 leading-relaxed">
-        Hoy se le sugiere apartar:<span class="font-bold text-white">$5,000 COP</span>.
-      </p>
+      <!-- Botón de campana de notificaciones -->
+      <button
+        (click)="irANotificaciones()"
+        class="p-2 text-[#94A3B8] hover:text-white relative rounded-xl hover:bg-slate-800/60 transition cursor-pointer"
+        title="Ver Notificaciones"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+          />
+        </svg>
+        @if (notificacionService.noLeidasCount() > 0) {
+          <span
+            class="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 bg-[#EF4444] text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse"
+          >
+            {{ notificacionService.noLeidasCount() }}
+          </span>
+        }
+      </button>
     </div>
   </div>
 
-  <!-- Widget de Meta de Ahorro -->
-  <a routerLink="/ahorros" class="block bg-[#151C2C] border border-slate-800/80 rounded-2xl p-4 space-y-3 shadow-lg hover:border-slate-700/80 transition cursor-pointer">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="p-2 bg-emerald-500/10 text-[#10B981] rounded-xl font-bold">💰</div>
-        <span class="text-sm font-semibold text-white">Metas de Ahorro</span>
+  <!-- Saludo Personalizado -->
+  <div class="px-1">
+    <h2 class="text-lg font-bold text-white flex items-center gap-1.5">
+      <span>Hola, {{ nombreUsuario() }}</span>
+      <span class="animate-pulse">👋</span>
+    </h2>
+    <p class="text-xs text-[#94A3B8]">Resumen de tu actividad diaria</p>
+  </div>
+
+  <!-- Tarjeta de Balance Diario -->
+  <div class="bg-[#151C2C] border border-slate-800/80 rounded-3xl p-6 text-center shadow-xl space-y-4 relative overflow-hidden">
+    <div class="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none"></div>
+
+    <div>
+      <span class="text-xs font-semibold text-[#94A3B8] tracking-wider uppercase">
+        Balance Diario
+      </span>
+      <div
+        class="text-4xl sm:text-5xl font-extrabold mt-1 tracking-tight"
+        [class.text-emerald-400]="(balance()?.saldo ?? 0) > 0"
+        [class.text-white]="(balance()?.saldo ?? 0) === 0"
+        [class.text-red-400]="(balance()?.saldo ?? 0) < 0"
+      >
+        ${{ (balance()?.saldo ?? 0) | number : '1.0-0' }}
       </div>
-      <span class="text-[#94A3B8] text-sm">›</span>
+      <span class="text-[11px] font-bold text-[#94A3B8] uppercase tracking-widest mt-1 block">
+        COP
+      </span>
     </div>
 
-    <!-- Barra de progreso -->
-    <div class="w-full bg-[#0B0F19] h-2.5 rounded-full overflow-hidden border border-slate-800">
-      <div class="bg-[#10B981] h-full rounded-full" style="width: 70%"></div>
+    <!-- Desglose de ingresos vs gastos de hoy -->
+    <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-800/80">
+      <div class="p-2.5 bg-[#0B0F19]/60 rounded-2xl border border-slate-800/60">
+        <span class="text-[10px] font-bold text-[#94A3B8] uppercase block">Ingresos Hoy</span>
+        <span class="text-sm font-bold text-emerald-400">
+          +${{ (balance()?.ingresos ?? 0) | number : '1.0-0' }}
+        </span>
+      </div>
+
+      <div class="p-2.5 bg-[#0B0F19]/60 rounded-2xl border border-slate-800/60">
+        <span class="text-[10px] font-bold text-[#94A3B8] uppercase block">Gastos Hoy</span>
+        <span class="text-sm font-bold text-red-400">
+          -${{ (balance()?.gastos ?? 0) | number : '1.0-0' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Acciones rápidas de ingreso y gasto -->
+  <div class="grid grid-cols-2 gap-4">
+    <button
+      (click)="irACrear('INGRESO')"
+      class="flex items-center justify-center gap-2 py-4 px-4 bg-[#10B981] hover:bg-emerald-600 active:scale-95 text-white font-bold text-base sm:text-lg rounded-2xl shadow-lg shadow-emerald-500/20 transition cursor-pointer"
+    >
+      <span class="text-2xl leading-none">+</span>
+      <span>Ingreso</span>
+    </button>
+
+    <button
+      (click)="irACrear('GASTO')"
+      class="flex items-center justify-center gap-2 py-4 px-4 bg-[#EF4444] hover:bg-red-600 active:scale-95 text-white font-bold text-base sm:text-lg rounded-2xl shadow-lg shadow-red-500/20 transition cursor-pointer"
+    >
+      <span class="text-2xl leading-none">-</span>
+      <span>Gasto</span>
+    </button>
+  </div>
+
+  <!-- Widget Cuota Diaria de Seguridad -->
+  @if ((cuotaSeguridad()?.cuotaSeguridad ?? 0) > 0) {
+    <a
+      routerLink="/obligaciones"
+      class="block bg-[#F59E0B]/10 border border-[#F59E0B]/40 hover:border-[#F59E0B]/60 rounded-2xl p-4 flex items-start gap-3.5 transition shadow-lg cursor-pointer"
+    >
+      <div class="p-2 bg-[#F59E0B]/20 text-[#F59E0B] rounded-xl text-lg shrink-0">
+        ⚠️
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-[#F59E0B]">Cuota Diaria de Seguridad:</h3>
+          <span class="text-xs text-[#F59E0B]">›</span>
+        </div>
+        <p class="text-xs text-amber-200/90 mt-1 leading-relaxed">
+          Hoy se te sugiere apartar:
+          <span class="font-bold text-white">
+            ${{ (cuotaSeguridad()?.cuotaSeguridad ?? 0) | number : '1.0-0' }} COP
+          </span>
+          para asegurar el pago de tus obligaciones a tiempo.
+        </p>
+      </div>
+    </a>
+  } @else {
+    <a
+      routerLink="/obligaciones"
+      class="block bg-emerald-500/10 border border-emerald-500/30 hover:border-emerald-500/50 rounded-2xl p-4 flex items-start gap-3.5 transition shadow-lg cursor-pointer"
+    >
+      <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl text-lg shrink-0">
+        🛡️
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-emerald-400">Cuota Diaria al Día</h3>
+          <span class="text-xs text-emerald-400">›</span>
+        </div>
+        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+          ¡Excelente! No tienes cuotas de seguridad pendientes para el día de hoy. Tus compromisos están cubiertos.
+        </p>
+      </div>
+    </a>
+  }
+
+  <!-- Widget de Metas de Ahorro -->
+  @if (metaDestacada(); as meta) {
+    <a
+      routerLink="/ahorros"
+      class="block bg-[#151C2C] border border-slate-800/80 rounded-2xl p-4 space-y-3 shadow-lg hover:border-slate-700/80 transition cursor-pointer"
+    >
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="p-2 bg-emerald-500/10 text-[#10B981] rounded-xl font-bold shrink-0">
+            🎯
+          </div>
+          <div class="min-w-0">
+            <span class="text-xs text-[#94A3B8] uppercase font-bold tracking-wider block">
+              Meta de Ahorro Activa
+            </span>
+            <span class="text-sm font-bold text-white truncate block">
+              {{ meta.titulo }}
+            </span>
+          </div>
+        </div>
+        <span class="text-xs font-bold text-emerald-400 shrink-0">
+          {{ porcentajeAhorro() }}%
+        </span>
+      </div>
+
+      <!-- Barra de progreso -->
+      <div class="w-full bg-[#0B0F19] h-2.5 rounded-full overflow-hidden border border-slate-800">
+        <div
+          class="bg-[#10B981] h-full rounded-full transition-all duration-500"
+          [style.width.%]="porcentajeAhorro()"
+        ></div>
+      </div>
+
+      <div class="flex justify-between text-xs text-[#94A3B8] font-medium">
+        <span class="text-white font-bold">
+          ${{ (meta.montoAcumulado || 0) | number : '1.0-0' }} COP
+        </span>
+        <span>
+          Meta: ${{ meta.montoObjetivo | number : '1.0-0' }} COP
+        </span>
+      </div>
+    </a>
+  } @else {
+    <a
+      routerLink="/ahorros"
+      class="block bg-[#151C2C] border border-dashed border-slate-800 hover:border-emerald-500/50 rounded-2xl p-4 transition cursor-pointer text-center space-y-2"
+    >
+      <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg font-bold">
+        🎯
+      </div>
+      <div>
+        <h4 class="text-xs font-bold text-white">Crea tu primera Cajita de Ahorro</h4>
+        <p class="text-[11px] text-[#94A3B8] mt-0.5">
+          Define una meta y aparta dinero fácilmente cada semana.
+        </p>
+      </div>
+    </a>
+  }
+
+  <!-- Sección Movimientos Recientes -->
+  <div class="space-y-3">
+    <div class="flex items-center justify-between px-1">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-[#94A3B8]">
+        Movimientos Recientes
+      </h3>
+      <a
+        routerLink="/transacciones"
+        class="text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition"
+      >
+        Ver todos ›
+      </a>
     </div>
 
-    <div class="flex justify-between text-xs text-[#94A3B8] font-medium">
-      <span class="text-white font-bold">$85,000 COP</span>
-      <span>Meta: $120,000 COP</span>
-    </div>
-  </a>
+    @if (transaccionesRecientes().length > 0) {
+      <div class="bg-[#151C2C] border border-slate-800/80 rounded-2xl divide-y divide-slate-800/60 overflow-hidden shadow-lg">
+        @for (tx of transaccionesRecientes(); track tx.id) {
+          <div class="p-3.5 flex items-center justify-between gap-3 hover:bg-slate-800/30 transition">
+            <div class="flex items-center gap-3 min-w-0">
+              <div
+                class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-base shrink-0"
+                [class.bg-emerald-500/15]="tx.tipo === 'INGRESO'"
+                [class.text-emerald-400]="tx.tipo === 'INGRESO'"
+                [class.bg-red-500/15]="tx.tipo === 'GASTO'"
+                [class.text-red-400]="tx.tipo === 'GASTO'"
+              >
+                {{ tx.tipo === 'INGRESO' ? '+' : '-' }}
+              </div>
+              <div class="min-w-0">
+                <h4 class="text-xs font-bold text-white truncate">
+                  {{ tx.descripcion || tx.categoriaNombre || 'Sin descripción' }}
+                </h4>
+                <div class="flex items-center gap-1.5 text-[11px] text-[#94A3B8]">
+                  <span>{{ tx.categoriaNombre }}</span>
+                  <span>•</span>
+                  <span>{{ tx.fecha }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-right shrink-0">
+              <span
+                class="text-xs font-extrabold"
+                [class.text-emerald-400]="tx.tipo === 'INGRESO'"
+                [class.text-red-400]="tx.tipo === 'GASTO'"
+              >
+                {{ tx.tipo === 'INGRESO' ? '+' : '-' }}${{ tx.monto | number : '1.0-0' }}
+              </span>
+              <span class="text-[10px] text-[#94A3B8] block uppercase">
+                {{ tx.metodoPago }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Estado vacío para movimientos recientes -->
+      <div class="p-6 text-center bg-[#151C2C] border border-slate-800 rounded-2xl space-y-2">
+        <p class="text-xs text-[#94A3B8]">No tienes movimientos registrados todavía.</p>
+        <button
+          (click)="irACrear('INGRESO')"
+          class="text-xs text-emerald-400 hover:text-emerald-300 font-bold underline cursor-pointer"
+        >
+          + Registrar primer ingreso
+        </button>
+      </div>
+    }
+  </div>
+
 </div>
