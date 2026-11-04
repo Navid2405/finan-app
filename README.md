@@ -327,13 +327,13 @@ npm test -- --no-watch
 
 ---
 
-##  Instalación y Ejecución Local
+## 🚀 Instalación y Ejecución Local
 
-### Prerrequisitos
-* **Java Development Kit (JDK) 17+** (OpenJDK o Temurin)
+### Prerrequisitos del Entorno
+* **Java Development Kit (JDK) 17+** (OpenJDK o Eclipse Temurin)
 * **Node.js 18+** y **npm 9+**
-* **PostgreSQL 15+** instalado y corriendo en puerto `5432`
-* **Docker** (opcional, para ejecución con contenedores)
+* **PostgreSQL 15+** corriendo en el puerto local `5432`
+* **Docker & Docker Compose** (opcional, para ejecución automatizada en contenedores)
 
 ---
 
@@ -345,57 +345,109 @@ cd finan-app
 
 ---
 
-### 2. Configurar la Base de Datos
-Crea una base de datos en PostgreSQL llamada `finanapp_db`:
-```sql
-CREATE DATABASE finanapp_db;
-```
+### 2. Variables de Entorno
 
----
+####  Backend (`finanapp-backend/.env`)
+Crea un archivo `.env` en la raíz de `finanapp-backend/` basándote en la plantilla [`finanapp-backend/.env.example`](finanapp-backend/.env.example):
 
-### 3. Configurar y Ejecutar el Backend
-
-1. Ingresa a la carpeta `finanapp-backend/`:
-   ```bash
-   cd finanapp-backend
-   ```
-2. Crea un archivo `.env` en la raíz de `finanapp-backend/` tomando como referencia las siguientes variables:
-   ```env
-   DB_URL=jdbc:postgresql://localhost:5432/finanapp_db
-   DB_USERNAME=postgres
-   DB_PASSWORD=tu_password_aqui
-   JWT_SECRET=tuClaveSecretaSuperLargaYSeguraDeMinimo32Caracteres1234567890
-   PORT=8081
-   ```
-3. Compilar y ejecutar con el wrapper de Maven:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-   *El backend quedará escuchando en `http://localhost:8081`.*
-
-*(Opcional con Docker)*:
 ```bash
-docker build -t finanapp-backend .
-docker run -p 8081:8081 --env-file .env finanapp-backend
+cp finanapp-backend/.env.example finanapp-backend/.env
+```
+
+| Variable | Tipo | Descripción | Ejemplo / Valor por defecto | Obligatorio |
+| :--- | :--- | :--- | :--- | :--- |
+| `DB_URL` | String | URL JDBC de conexión a PostgreSQL | `jdbc:postgresql://localhost:5432/finanapp_db` | Sí |
+| `DB_USERNAME` | String | Usuario de la base de datos | `postgres` | Sí |
+| `DB_PASSWORD` | String | Contraseña del usuario PostgreSQL | `tu_password_aqui` | Sí |
+| `PORT` | Integer | Puerto de escucha del servidor Spring Boot | `8081` | No (default `8081`) |
+| `JWT_SECRET` | String | Clave criptográfica para firma HMAC-SHA256 (mínimo 32 caracteres) | `MiClaveSuperSeguraMinimo32Caracteres123!` | Sí |
+
+####  Frontend (`finanapp-frontend/src/environments/`)
+El frontend cuenta con perfiles de entorno en Angular para dirigir el tráfico de la API:
+* **Desarrollo local (`src/environments/environment.development.ts`):**
+  ```typescript
+  export const environment = {
+    production: false,
+    apiUrl: 'http://localhost:8081/api'
+  };
+  ```
+* **Producción (`src/environments/environment.ts`):**
+  ```typescript
+  export const environment = {
+    production: true,
+    apiUrl: 'https://finan-app.onrender.com/api'
+  };
+  ```
+
+---
+
+### 3. Configuración de la Base de Datos
+
+1. **Crear la base de datos en PostgreSQL:**
+   ```sql
+   CREATE DATABASE finanapp_db;
+   ```
+2. **Generación automática del esquema:**
+   Al iniciar el backend, Hibernate (`spring.jpa.hibernate.ddl-auto=update`) creará automáticamente las 7 tablas del modelo (`usuarios`, `categorias`, `transacciones`, `obligaciones_recurrentes`, `pagos_obligacion`, `metas_ahorro`, `aportes_ahorro`).
+3. **Poblar categorías globales semilla (Opcional pero recomendado):**
+   Para inicializar la app con categorías estándar de ingresos y gastos (comida, transporte, nómina, etc.), ejecuta el script [`finanapp-backend/data-seed.sql`](finanapp-backend/data-seed.sql):
+   ```bash
+   psql -U postgres -d finanapp_db -f finanapp-backend/data-seed.sql
+   ```
+
+---
+
+### 4. Ejecución del Proyecto
+
+Tienes dos alternativas para poner a rodar el proyecto:
+
+####  Opción A: Ejecución Nativa por Terminal (Recomendada para Desarrollo)
+
+**Paso 1: Iniciar el Backend**
+```bash
+cd finanapp-backend
+./mvnw spring-boot:run
+```
+*El backend compilará y se levantará en [http://localhost:8081](http://localhost:8081).*
+
+**Paso 2: Iniciar el Frontend**
+En una terminal secundaria:
+```bash
+cd finanapp-frontend
+npm install
+npm start
+```
+*El frontend estará disponible de inmediato en [http://localhost:4200](http://localhost:4200).*
+
+---
+
+####  Opción B: Ejecución con Docker Compose (Base de Datos + Backend Contenerizados)
+
+El repositorio incluye un archivo [`docker-compose.yml`](docker-compose.yml) listo para producción/evaluación que provisiona PostgreSQL 16 y el servidor Spring Boot de forma aislada:
+
+```bash
+# Levantar PostgreSQL y Backend
+docker compose up --build -d
+
+# Ver los logs del backend
+docker compose logs -f backend
+```
+
+Para correr el frontend y conectarlo al backend contenerizado:
+```bash
+cd finanapp-frontend
+npm install
+npm start
 ```
 
 ---
 
-### 4. Configurar y Ejecutar el Frontend
+### 5. Verificación de la Instalación (Smoke Test)
 
-1. En una nueva terminal, ingresa a la carpeta `finanapp-frontend/`:
-   ```bash
-   cd finanapp-frontend
-   ```
-2. Instalar las dependencias de Node:
-   ```bash
-   npm install
-   ```
-3. Iniciar el servidor de desarrollo de Angular:
-   ```bash
-   npm start
-   ```
-4. Abre tu navegador en **`http://localhost:4200`**.
+1. **Salud del Backend:** Abre [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html) para verificar que la interfaz de Swagger UI responde correctamente.
+2. **Acceso al Frontend:** Abre [http://localhost:4200](http://localhost:4200) y verifica la pantalla de login.
+3. **Registro Inicial:** Ve a `/auth/registro`, crea una cuenta de prueba e inicia sesión.
+4. **Flujo Principal:** Registra una transacción y comprueba que el saldo en el Dashboard se actualiza en tiempo real.
 
 ---
 
