@@ -74,7 +74,7 @@ onSubmit(): void {
       {
         next:()=>{
           this.cargando.set(false);
-          this.router.navigate(['auth/login']);
+          this.router.navigate(['/auth/login'], { queryParams: { registrado: 'true' } });
         },
         error: (err) => {
           this.cargando.set(false);

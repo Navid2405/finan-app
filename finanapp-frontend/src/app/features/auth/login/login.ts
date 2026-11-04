@@ -1,6 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthModel } from '../../../core/models/auth.model';
 
@@ -10,20 +10,35 @@ import { AuthModel } from '../../../core/models/auth.model';
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
-export class Login {
+export class Login implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   // Signals para manejar el estado de la vista
   cargando = signal<boolean>(false);
   errorMensaje = signal<string | null>(null);
+  mensajeExito = signal<string | null>(null);
 
   // Formulario con validaciones básicas
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(4)]]
   });
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['registrado'] === 'true') {
+        this.mensajeExito.set('¡Cuenta creada exitosamente! Ingresa tu contraseña para comenzar.');
+        const emailGuardado = localStorage.getItem('usuarioNuevoEmail');
+        if (emailGuardado) {
+          this.loginForm.patchValue({ email: emailGuardado });
+          localStorage.removeItem('usuarioNuevoEmail');
+        }
+      }
+    });
+  }
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
@@ -33,6 +48,7 @@ export class Login {
 
     this.cargando.set(true);
     this.errorMensaje.set(null);
+    this.mensajeExito.set(null);
 
     const credenciales: AuthModel = {
       email: this.loginForm.value.email!,

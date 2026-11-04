@@ -8,6 +8,13 @@
       <p class="text-xs sm:text-sm text-[#94A3B8] mt-1">Ingresa tus credenciales para acceder a tus finanzas</p>
     </div>
 
+    <!-- Mensaje de Éxito al Registrarse -->
+    @if (mensajeExito()) {
+      <div class="mb-5 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-[#10B981] text-xs sm:text-sm flex items-center gap-2.5 animate-fadeIn">
+        <span>{{ mensajeExito() }}</span>
+      </div>
+    }
+
     <!-- Alerta de Error -->
     @if (errorMensaje()) {
       <div  class="mb-5 p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-[#EF4444] text-xs sm:text-sm flex items-center gap-2.5">
