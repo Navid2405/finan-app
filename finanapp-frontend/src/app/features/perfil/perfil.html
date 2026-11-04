@@ -1,0 +1,380 @@
+<div class="space-y-6 animate-in fade-in duration-300">
+
+  <!-- Top Bar / Cabecera -->
+  <div class="flex items-center justify-between pt-2">
+    <div class="flex items-center gap-3">
+      <a
+        routerLink="/dashboard"
+        class="p-2 -ml-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/60 transition"
+        title="Volver al inicio"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-white">Mi Perfil</h1>
+        <p class="text-xs text-[#94A3B8]">Datos de tu cuenta y preferencias</p>
+      </div>
+    </div>
+
+    @if (usuarioService.perfil(); as usuario) {
+      <button
+        (click)="abrirModalEditar()"
+        class="px-3 py-1.5 bg-[#151C2C] hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-xs font-bold text-white rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow"
+      >
+        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+        </svg>
+        <span>Editar</span>
+      </button>
+    }
+  </div>
+
+  @if (cargando()) {
+    <!-- Estado de carga -->
+    <div class="py-20 flex flex-col items-center justify-center space-y-3">
+      <div class="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+      <p class="text-xs text-[#94A3B8]">Cargando tu información...</p>
+    </div>
+  } @else if (usuarioService.perfil(); as usuario) {
+
+    <!-- Tarjeta Principal de Identidad / Avatar -->
+    <div class="bg-[#151C2C] border border-slate-800/80 rounded-3xl p-6 text-center space-y-4 shadow-xl relative overflow-hidden">
+      <!-- Fondo decorativo sutil -->
+      <div class="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Avatar con Iniciales -->
+      <div class="relative inline-block">
+        <div class="w-20 h-20 mx-auto rounded-3xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-extrabold text-2xl shadow-lg shadow-emerald-500/10">
+          {{ obtenerIniciales(usuario.nombre) }}
+        </div>
+        @if (usuario.activo) {
+          <span
+            class="absolute bottom-0 right-0 w-5 h-5 bg-emerald-500 border-2 border-[#151C2C] rounded-full"
+            title="Cuenta Activa"
+          ></span>
+        }
+      </div>
+
+      <div class="space-y-1">
+        <h2 class="text-lg font-bold text-white">{{ usuario.nombre }}</h2>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/80 text-emerald-400 text-xs font-semibold">
+          <span>💼</span>
+          <span>{{ usuario.ocupacion }}</span>
+        </div>
+        <p class="text-[11px] text-[#94A3B8] pt-1">
+          Miembro desde {{ formatearFechaRegistro(usuario.creadoEn) }}
+        </p>
+      </div>
+
+      <div class="pt-2">
+        <button
+          (click)="abrirModalEditar()"
+          class="w-full py-2.5 px-4 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 transition cursor-pointer flex items-center justify-center gap-2"
+        >
+          <span>✏️</span>
+          <span>Editar Nombre u Ocupación</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sección de Información de la Cuenta -->
+    <div class="space-y-3">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-[#94A3B8] px-1">
+        Datos de Contacto y Cuenta
+      </h3>
+
+      <div class="bg-[#151C2C] border border-slate-800/80 rounded-2xl divide-y divide-slate-800/60 overflow-hidden shadow-lg">
+
+        <!-- Correo Electrónico -->
+        <div class="p-4 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-slate-800/80 text-slate-300 flex items-center justify-center text-base">
+              ✉️
+            </div>
+            <div>
+              <span class="text-[11px] text-[#94A3B8] block">Correo Electrónico</span>
+              <span class="text-xs font-semibold text-white">{{ usuario.email }}</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            Verificado
+          </span>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="p-4 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-slate-800/80 text-slate-300 flex items-center justify-center text-base">
+              📱
+            </div>
+            <div>
+              <span class="text-[11px] text-[#94A3B8] block">Teléfono Móvil</span>
+              <span class="text-xs font-semibold text-white">{{ usuario.telefono }}</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-800 text-slate-400">
+            Móvil
+          </span>
+        </div>
+
+        <!-- Ocupación Actual -->
+        <div class="p-4 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-slate-800/80 text-slate-300 flex items-center justify-center text-base">
+              🛠️
+            </div>
+            <div>
+              <span class="text-[11px] text-[#94A3B8] block">Actividad Económica</span>
+              <span class="text-xs font-semibold text-white">{{ usuario.ocupacion }}</span>
+            </div>
+          </div>
+          <button
+            (click)="abrirModalEditar()"
+            class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer"
+          >
+            Cambiar
+          </button>
+        </div>
+
+        <!-- ID de Registro -->
+        <div class="p-4 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-slate-800/80 text-slate-300 flex items-center justify-center text-base">
+              🆔
+            </div>
+            <div>
+              <span class="text-[11px] text-[#94A3B8] block">Identificador de Usuario</span>
+              <span class="text-xs font-semibold text-slate-400 font-mono">#{{ usuario.id }}</span>
+            </div>
+          </div>
+          <span class="text-[11px] text-emerald-400 font-semibold">● Activo</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Sección de Preferencias del Sistema -->
+    <div class="space-y-3">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-[#94A3B8] px-1">
+        Preferencias y Sistema
+      </h3>
+
+      <div class="bg-[#151C2C] border border-slate-800/80 rounded-2xl divide-y divide-slate-800/60 overflow-hidden shadow-lg">
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-lg">🇨🇴</span>
+            <div>
+              <span class="text-xs font-semibold text-white">Moneda Principal</span>
+              <span class="text-[11px] text-[#94A3B8] block">Peso Colombiano (COP $)</span>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-slate-400">COP</span>
+        </div>
+
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-lg">🌙</span>
+            <div>
+              <span class="text-xs font-semibold text-white">Tema Visual</span>
+              <span class="text-[11px] text-[#94A3B8] block">Modo Oscuro FinanApp</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-500/10 text-emerald-400">
+            Predeterminado
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones de Cuenta / Zona de Peligro -->
+    <div class="space-y-3 pt-2">
+      <!-- Botón de Cerrar Sesión -->
+      <button
+        (click)="cerrarSesion()"
+        class="w-full py-3.5 px-4 bg-[#151C2C] hover:bg-red-500/10 border border-slate-800 hover:border-red-500/30 rounded-2xl text-xs font-bold text-red-400 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+      >
+        <span>🚪</span>
+        <span>Cerrar Sesión</span>
+      </button>
+
+      <!-- Botón para Desactivar Cuenta -->
+      <div class="text-center pt-2">
+        <button
+          (click)="abrirModalDesactivar()"
+          class="text-xs text-slate-500 hover:text-red-400 underline underline-offset-4 transition cursor-pointer"
+        >
+          Desactivar mi cuenta de FinanApp
+        </button>
+      </div>
+    </div>
+
+  } @else {
+    <!-- Estado de error -->
+    <div class="py-16 text-center bg-[#151C2C] border border-slate-800 rounded-2xl p-6 space-y-4">
+      <div class="text-3xl">⚠️</div>
+      <h3 class="text-base font-bold text-white">No se pudo cargar tu perfil</h3>
+      <p class="text-xs text-[#94A3B8]">Verifica tu conexión a internet o inicia sesión nuevamente.</p>
+      <button
+        (click)="cargarDatosPerfil()"
+        class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition active:scale-95 cursor-pointer"
+      >
+        Reintentar
+      </button>
+    </div>
+  }
+
+  <!-- Modal de Edición de Perfil -->
+  @if (modalEditar()) {
+    <div class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-[#151C2C] border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl animate-in zoom-in-95 duration-150">
+
+        <!-- Cabecera del modal -->
+        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-sm font-bold">
+              ✏️
+            </div>
+            <h3 class="text-base font-bold text-white">Editar Perfil</h3>
+          </div>
+          <button
+            (click)="cerrarModalEditar()"
+            class="text-slate-400 hover:text-white p-1 rounded-lg"
+          >
+            ✕
+          </button>
+        </div>
+
+        @if (formError()) {
+          <div class="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-400">
+            {{ formError() }}
+          </div>
+        }
+
+        <!-- Campos del formulario -->
+        <div class="space-y-4">
+          <!-- Nombre Completo -->
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-slate-300">Nombre Completo</label>
+            <input
+              type="text"
+              [ngModel]="formNombre()"
+              (ngModelChange)="formNombre.set($event)"
+              placeholder="Tu nombre completo"
+              maxlength="100"
+              class="w-full px-3.5 py-2.5 bg-[#0B0F19] border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"
+            />
+          </div>
+
+          <!-- Ocupación -->
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-slate-300">Ocupación o Oficio</label>
+            <input
+              type="text"
+              [ngModel]="formOcupacion()"
+              (ngModelChange)="formOcupacion.set($event)"
+              placeholder="Ej: Comerciante, Conductor, etc."
+              maxlength="60"
+              class="w-full px-3.5 py-2.5 bg-[#0B0F19] border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"
+            />
+          </div>
+
+          <!-- Chips de ocupaciones sugeridas -->
+          <div class="space-y-1.5 pt-1">
+            <span class="text-[11px] text-[#94A3B8]">Sugerencias rápidas:</span>
+            <div class="flex flex-wrap gap-1.5">
+              @for (sug of ocupacionesSugeridas; track sug) {
+                <button
+                  type="button"
+                  (click)="seleccionarOcupacion(sug)"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer"
+                  [class.bg-emerald-500]="formOcupacion() === sug"
+                  [class.text-white]="formOcupacion() === sug"
+                  [class.bg-slate-800]="formOcupacion() !== sug"
+                  [class.text-slate-300]="formOcupacion() !== sug"
+                  [class.hover:bg-slate-700]="formOcupacion() !== sug"
+                >
+                  {{ sug }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <button
+            type="button"
+            (click)="cerrarModalEditar()"
+            class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            (click)="guardarEdicion()"
+            [disabled]="guardando()"
+            class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 active:scale-95 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-lg shadow-emerald-500/20"
+          >
+            {{ guardando() ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- Modal de Confirmación para Desactivar Cuenta -->
+  @if (modalConfirmarDesactivar()) {
+    <div class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-[#151C2C] border border-slate-800 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl animate-in zoom-in-95 duration-150">
+
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-red-500/20 text-red-400 flex items-center justify-center text-2xl font-bold">
+            ⚠️
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">¿Desactivar tu cuenta?</h3>
+            <p class="text-xs text-[#94A3B8]">Acción de seguridad de FinanApp</p>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Tu cuenta será desactivada y se cerrará la sesión actual. Tu historial financiero quedará protegido para preservar la trazabilidad de tus movimientos.
+        </p>
+
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <button
+            (click)="cerrarModalDesactivar()"
+            class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button
+            (click)="confirmarDesactivar()"
+            [disabled]="desactivando()"
+            class="px-4 py-2 bg-red-500 hover:bg-red-600 active:scale-95 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-lg shadow-red-500/20"
+          >
+            {{ desactivando() ? 'Desactivando...' : 'Sí, Desactivar' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- Toast Flotante -->
+  @if (toast(); as t) {
+    <div
+      class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl text-xs font-bold shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-bottom-3 duration-200 max-w-[90vw]"
+      [class.bg-emerald-500]="t.tipo === 'exito'"
+      [class.text-white]="true"
+      [class.bg-blue-500]="t.tipo === 'info'"
+      [class.bg-red-500]="t.tipo === 'error'"
+    >
+      <span>{{ t.mensaje }}</span>
+    </div>
+  }
+
+</div>
