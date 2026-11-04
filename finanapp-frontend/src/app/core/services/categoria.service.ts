@@ -5,7 +5,7 @@ import {environment} from '../../../environments/environment';
 import {CategoriaModel, ActualizarCategoria, CategoriaResponse} from '../models/categoria.model';
 import {TipoTransaccionModel} from '../models/tipo-transaccion.model';
 
-Injectable(
+@Injectable(
   {
     providedIn:'root'
   }
