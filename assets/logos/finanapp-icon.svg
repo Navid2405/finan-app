@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="cardBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#151C2C"/>
+      <stop offset="100%" stop-color="#0B0F19"/>
+    </linearGradient>
+    <linearGradient id="borderGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#10B981" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#059669" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="primaryGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6EE7B7"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="accentGlow" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="4" y="4" width="112" height="112" rx="28" fill="url(#cardBg)" stroke="url(#borderGlow)" stroke-width="2"/>
+
+  <!-- Subtle ambient glow circle behind symbol -->
+  <circle cx="60" cy="60" r="32" fill="#10B981" opacity="0.12" filter="url(#glow)"/>
+
+  <!-- FinanApp Monogram: 'F' + Growth Bars & Flow -->
+  <!-- Main Vertical Stem of F -->
+  <rect x="30" y="26" width="13" height="68" rx="6.5" fill="url(#primaryGlow)"/>
+
+  <!-- Top Bar: Long dynamic bar with chart surge -->
+  <rect x="47" y="26" width="43" height="13" rx="6.5" fill="url(#accentGlow)"/>
+
+  <!-- Middle Bar: Cash Flow bar with rounded cap -->
+  <rect x="47" y="51" width="28" height="13" rx="6.5" fill="url(#primaryGlow)"/>
+
+  <!-- Ascending Growth Accent (3rd micro-indicator / trend dot) -->
+  <rect x="80" y="49" width="10" height="17" rx="5" fill="url(#primaryGlow)" opacity="0.9"/>
+  <rect x="80" y="72" width="10" height="22" rx="5" fill="url(#accentGlow)"/>
+</svg>

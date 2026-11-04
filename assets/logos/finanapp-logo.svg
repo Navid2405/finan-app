@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" fill="none">
+  <defs>
+    <linearGradient id="iconBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#151C2C"/>
+      <stop offset="100%" stop-color="#0B0F19"/>
+    </linearGradient>
+    <linearGradient id="iconBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#10B981" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#059669" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6EE7B7"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="cyanGreenGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="textEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon Container -->
+  <g transform="translate(10, 10)">
+    <rect width="60" height="60" rx="16" fill="url(#iconBg)" stroke="url(#iconBorder)" stroke-width="1.5"/>
+    <!-- Stem -->
+    <rect x="15" y="13" width="7" height="34" rx="3.5" fill="url(#greenGrad)"/>
+    <!-- Top bar -->
+    <rect x="24" y="13" width="21" height="7" rx="3.5" fill="url(#cyanGreenGrad)"/>
+    <!-- Middle bar -->
+    <rect x="24" y="26" width="14" height="7" rx="3.5" fill="url(#greenGrad)"/>
+    <!-- Accent growth pills -->
+    <rect x="40" y="25" width="5" height="8" rx="2.5" fill="url(#greenGrad)" opacity="0.85"/>
+    <rect x="40" y="36" width="5" height="11" rx="2.5" fill="url(#cyanGreenGrad)"/>
+  </g>
+
+  <!-- Typography -->
+  <text x="84" y="50" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="28" font-weight="800" letter-spacing="-0.5" fill="#FFFFFF">Finan<tspan fill="url(#textEmerald)">App</tspan></text>
+  
+  <!-- Subtle Tagline -->
+  <text x="86" y="63" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="600" letter-spacing="1.5" fill="#64748B" text-transform="uppercase">CONTROL FINANCIERO</text>
+</svg>
